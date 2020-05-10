@@ -1,0 +1,9 @@
+Desc	Test animation :				
+Anim	PenseeNefaste	True	Step1		
+Desc	step1				
+Anim	PenseeNefaste	True	Fjgd		
+Desc	fjgd				
+Anim	PenseeNefaste	True	bdfvtrhgfdrgthg		
+Desc	Le truc là				
+Anim	PenseeNefaste	True	Lancer		
+Desc	Et on revient !				
