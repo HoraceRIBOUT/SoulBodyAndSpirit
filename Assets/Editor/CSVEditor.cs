@@ -303,6 +303,23 @@ public class CSVEditor : EditorWindow
                 s.grid[3, s.y] = EditorGUILayout.TextField(s.grid[3, s.y]);//path if not //ENUM
                 //TO DO : create an auto-button who create two choice depend on the current inter+choice if 2 or 3 is empty.
                 break;
+            case Utils.StepType.NextLine:
+                int lineToGoTo = 0;
+                if (!int.TryParse(s.grid[1, s.y], out lineToGoTo))
+                    s.grid[1, s.y] = (0).ToString();
+                s.grid[1, s.y] = (EditorGUILayout.IntField(lineToGoTo)).ToString();//int value. The line to go.
+                break;
+            case Utils.StepType.ConditionLine:
+                s.grid[1, s.y] = EditorGUILayout.TextField(s.grid[1, s.y]);//value to check
+                int lineIfWin, lineIfLoose = 0;
+                if (!int.TryParse(s.grid[2, s.y], out lineIfWin))
+                    s.grid[2, s.y] = (0).ToString();
+                if (!int.TryParse(s.grid[3, s.y], out lineIfLoose))
+                    s.grid[3, s.y] = (0).ToString();
+                s.grid[2, s.y] = (EditorGUILayout.IntField(lineIfWin)).ToString();//int value. The line to go.
+                s.grid[3, s.y] = (EditorGUILayout.IntField(lineIfLoose)).ToString();//int value. The line to go.
+                //TO DO : a check if line is too high
+                break;
             case Utils.StepType.ChangeValeur:
                 //boolean only
                 s.grid[1, s.y] = EditorGUILayout.TextField(s.grid[1, s.y]);//value name
@@ -362,6 +379,14 @@ public class CSVEditor : EditorWindow
                     s.grid[1, s.y] = "balai";
                 Utils.ItemGatherable valR = Utils.itemStringToEnum(s.grid[1, s.y]);
                 s.grid[1, s.y] = ((Utils.ItemGatherable)EditorGUILayout.Popup((int)valR, System.Enum.GetNames(typeof(Utils.ItemGatherable)))).ToString();
+                break;
+            case Utils.StepType.CinematicBar:
+                s.grid[1, s.y] = EditorGUILayout.Toggle(s.grid[1, s.y] == true.ToString()) ? true.ToString() : false.ToString(); //Display or hide
+                if (!float.TryParse(s.grid[2, s.y], out float speed))
+                {
+                    s.grid[2, s.y] = (1.0f).ToString();
+                }
+                s.grid[2, s.y] = (EditorGUILayout.FloatField(speed)).ToString(); //speed of it
                 break;
             default:
                 Debug.LogError("... How ?");
@@ -532,10 +557,13 @@ public class CSVEditor : EditorWindow
                             }
                         }
                         break;
+                    case Utils.StepType.NextLine:
+                    case Utils.StepType.ConditionLine:
                     case Utils.StepType.Decor: //maybe like animation
                     case Utils.StepType.Description:
                     case Utils.StepType.AddItem:
                     case Utils.StepType.RemoveItem:
+                    case Utils.StepType.CinematicBar:
                     default:
                         break;
                 }
@@ -677,6 +705,8 @@ public class CSVEditor : EditorWindow
                             s.grid[3, s.y] = boolParamPerAnimator[indexAnimator][indexParam];
                         //s.grid 4 doesn't change
                         break;
+                    case Utils.StepType.NextLine:
+                    case Utils.StepType.ConditionLine:
                     case Utils.StepType.Decor: //maybe like animation
                     case Utils.StepType.Description:
                     case Utils.StepType.AddItem:
