@@ -320,6 +320,9 @@ public class CSVEditor : EditorWindow
                 else
                     s.grid[1, s.y] = (EditorGUILayout.Popup(0, roomsName.ToArray())).ToString();
                 break;
+            case Utils.StepType.GoFight:
+                EditorGUILayout.LabelField("For now, empty ! But soon : a list of ennemy ?");
+                break;
             case Utils.StepType.Decor:
                 //empty yet
                 break;

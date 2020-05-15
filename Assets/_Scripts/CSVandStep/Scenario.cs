@@ -170,6 +170,9 @@ public class Scenario : MonoBehaviour {
             case (Utils.StepType.Salle):
                 DisplaySalle(currentStep);
                 break;
+            case (Utils.StepType.GoFight):
+                DisplayFight();
+                break;
             case (Utils.StepType.Decor):
                 DisplayDecor(currentStep);
                 break;
@@ -488,6 +491,12 @@ public class Scenario : MonoBehaviour {
         GameManager.Instance.ui_holder.desc.DeployInventory();
         GameManager.Instance.ui_holder.desc.ChangeUIItem(Utils.itemStringToEnum(giveStep.get(1)), false);
         displayNextStep();
+    }
+
+    private void DisplayFight()
+    {
+        StartFight();
+        waitingForClick = true;
     }
 
     [MyBox.ButtonMethod]

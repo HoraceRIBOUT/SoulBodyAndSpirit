@@ -2070,9 +2070,33 @@ MonoBehaviour:
     active: 0
     changeCSV: 0
   - id: Invalider
-    nameInChoice: Invalider
+    nameInChoice: Invalidate
     item: 0
     pathToFollow: Intro/Titre/Invalider
+    active: 0
+    changeCSV: 0
+  - id: Fight
+    nameInChoice: Fight
+    item: 0
+    pathToFollow: Intro/Titre/Fight
+    active: 1
+    changeCSV: 0
+  - id: Hit
+    nameInChoice: Hit
+    item: 0
+    pathToFollow: Intro/Titre/Hit
+    active: 0
+    changeCSV: 0
+  - id: CalmDown
+    nameInChoice: Calm down
+    item: 0
+    pathToFollow: Intro/Titre/CalmDown
+    active: 0
+    changeCSV: 0
+  - id: Poke
+    nameInChoice: Poke
+    item: 0
+    pathToFollow: Intro/Titre/Poke
     active: 0
     changeCSV: 0
   createCSV: 0

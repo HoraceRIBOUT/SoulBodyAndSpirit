@@ -22,6 +22,7 @@ public class Utils : MonoBehaviour {
         CinematicBar,
         NextLine,
         ConditionLine,
+        GoFight,
         //filter on screen like the Midnight Waves one ? * - * ? TO DO 
     }
     public static StepType stringToEnum(string s)
@@ -47,6 +48,9 @@ public class Utils : MonoBehaviour {
                 break;
             case ("sall"):
                 res = StepType.Salle;
+                break;
+            case ("fite"):
+                res = StepType.GoFight;
                 break;
             case ("deco"):
                 res = StepType.Decor;
@@ -94,22 +98,25 @@ public class Utils : MonoBehaviour {
         switch (s)
         {
             case (StepType.Description):
-                res = "Desc"; ;
+                res = "Desc";
                 break;
             case (StepType.Dialogue):
-                res = "Dial"; ;
+                res = "Dial";
                 break;
             case (StepType.Animation):
-                res = "Anim";;
+                res = "Anim";
                 break;
             case (StepType.Bruitage):
-                res = "Brui"; ;//?
+                res = "Brui";//?
                 break;
             case (StepType.Musique):
-                res = "Musi"; ;
+                res = "Musi";
                 break;
             case (StepType.Salle):
-                res = "Sall";;
+                res = "Sall";
+                break;
+            case (StepType.GoFight):
+                res = "Fite";
                 break;
             case (StepType.Decor):
                 res = "Deco"; ;
