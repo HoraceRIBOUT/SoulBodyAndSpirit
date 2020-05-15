@@ -11,6 +11,7 @@ public class Scenario : MonoBehaviour {
     public List<Room> rooms = new List<Room>();
     public List<string> roomsName = new List<string>();
     public Zone currentZone = null;
+    public FightManager fightMng;
     //Instanciate each one, by vague probably, or at start
 
 
@@ -23,16 +24,28 @@ public class Scenario : MonoBehaviour {
     public List<Step> currentStepList = new List<Step>();
     public int currentPos = 0;
 
+
     [Header("Progression")]
     public Dictionary<string, bool> dicoBool = new Dictionary<string, bool>();
     public List<string> _debug_NameCond = new List<string>();
 
     public List<Utils.ItemGatherable> inventaire;
     public List<Sprite> itemSpriteUI = new List<Sprite>();//for UI
+    
 
+    [Header("Zone & click")]
+    public int nbrZoneSous = 0;
+    public List<Zone> zoneSous = new List<Zone>();
+    public GameObject mouseMouse;
+    public bool lastDownFromScenario = false;
+
+    [Header("Room")]
+    public Animator animatorCanvas;
     //FOR NOW
-
     public AnimationHandler animHandler;
+    public Room currentRoom = null;
+    public Room nextRoom = null;
+
 
     public void Start()
     {
@@ -48,13 +61,9 @@ public class Scenario : MonoBehaviour {
             r.gameObject.SetActive(false);
         }
         currentRoom.gameObject.SetActive(true);
-        GameManager.Instance.ui_holder.desc.gameObject.SetActive(false);
+        //GameManager.Instance.ui_holder.desc.gameObject.SetActive(false);
     }
 
-    public int nbrZoneSous = 0;
-    public List<Zone> zoneSous = new List<Zone>();
-    public GameObject mouseMouse;
-    public bool lastDownFromScenario = false;
     // Update is called once per frame
     void Update () {
         if (waitingForClick)
@@ -168,7 +177,7 @@ public class Scenario : MonoBehaviour {
                 DisplayNext(currentStep);
                 break;
             case (Utils.StepType.Condition):
-                DislayCondition(currentStep);
+                DisplayCondition(currentStep);
                 break;
             case (Utils.StepType.ChangeValeur):
                 DisplayValeur(currentStep);
@@ -189,10 +198,10 @@ public class Scenario : MonoBehaviour {
                 DisplayCinematicBar(currentStep);
                 break;
             case (Utils.StepType.NextLine):
-                DisplayNext(currentStep);
+                DisplayNextLine(currentStep);
                 break;
             case (Utils.StepType.ConditionLine):
-                DislayConditionLine(currentStep);
+                DisplayConditionLine(currentStep);
                 break;
             default:
                 Debug.LogError("CustomError : Can't treat this type : " + typeToTreat.ToString());
@@ -242,15 +251,14 @@ public class Scenario : MonoBehaviour {
 
     private void DisplayNextLine(Step giveStep)
     {
-        //TO DO
+        if (!int.TryParse(giveStep.get(1), out int lineNumber))
+        {
+            lineNumber = currentPos;
+        }
+        currentPos = lineNumber - 1; //-1 because displayNextStep make a ++
+        displayNextStep();
     }
-
-    private void DislayConditionLine(Step giveStep)
-    {
-        //TO DO !!
-    }
-
-
+       
     private void DisplayCinematicBar(Step giveStep)
     {
         //TO DO : 
@@ -326,9 +334,6 @@ public class Scenario : MonoBehaviour {
         displayNextStep();
     }
 
-    public Animator animatorCanvas;
-    public Room currentRoom = null;
-    public Room nextRoom = null;
     private void DisplaySalle(Step giveStep)
     {
         //animatorCanvas.SetTrigger("Transition");
@@ -384,11 +389,12 @@ public class Scenario : MonoBehaviour {
         displayNextStep();
     }
 
-    private void DislayCondition(Step giveStep)
+    private void DisplayCondition(Step giveStep)
     {
         string index = giveStep.get(1);
         bool res;
-        /*res = */dicoBool.TryGetValue(index, out res);
+        /*res = */
+        dicoBool.TryGetValue(index, out res);
         Debug.Log("Cond is on : " + index);
         if (res)
         {
@@ -398,6 +404,26 @@ public class Scenario : MonoBehaviour {
         {
             ExecutePath(EnumUtils.ChangeToPath(EnumUtils.ChangeToEnum(giveStep.get(3))));
         }
+    }
+
+    private void DisplayConditionLine(Step giveStep)
+    {
+        string index = giveStep.get(1);
+        bool res;
+        /*res = */
+        dicoBool.TryGetValue(index, out res);
+        Debug.Log("LineCond is on : " + index);
+        int lineNumber = currentPos;
+        if (res)
+        {
+            int.TryParse(giveStep.get(2), out lineNumber);
+        }
+        else
+        {
+            int.TryParse(giveStep.get(3), out lineNumber);
+        }
+        currentPos = lineNumber - 1; //-1 because displayNextStep make a ++
+        displayNextStep();
     }
 
     private void DisplayZone(Step giveStep)
@@ -464,7 +490,16 @@ public class Scenario : MonoBehaviour {
         displayNextStep();
     }
 
-
+    [MyBox.ButtonMethod]
+    private void StartFight()
+    {
+        fightMng.LaunchFight();
+    }
+    [MyBox.ButtonMethod]
+    private void EndFight()
+    {
+        fightMng.EndFight();
+    }
 
 
 

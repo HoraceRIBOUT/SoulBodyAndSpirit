@@ -58,6 +58,9 @@ public class CSVEditor : EditorWindow
     public int switchIndex = 0;
 
 
+    List<int> listeOfCondYes = new List<int>();
+    List<int> listeOfCondNo = new List<int>();
+
 
     void OnGUI()
     {
@@ -179,6 +182,8 @@ public class CSVEditor : EditorWindow
             EditorGUILayout.LabelField("Step list : ");
 
             stepIndex = 0;
+            listeOfCondYes = new List<int>();
+            listeOfCondNo = new List<int>();
             foreach (Step s in stepList)
             {
                 LayoutForType(s);
@@ -212,9 +217,22 @@ public class CSVEditor : EditorWindow
             {
                 UpdateCSV();
             }
+
+            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKey(KeyCode.S))
+            {
+                UpdateCSV();
+            }
+            if (displayFrame != 0)
+            {
+                EditorGUILayout.LabelField("Saved this CSV");
+                displayFrame--;
+            }
+
         }
         //end of "if path is empty"
     }
+
+    int displayFrame = 0;
 
     private Step stepToRemove = null;
 
@@ -222,6 +240,17 @@ public class CSVEditor : EditorWindow
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField((stepIndex++).ToString(), GUILayout.Width(20));
+
+        if (listeOfCondYes.Contains(stepIndex - 1))
+        {
+            listeOfCondYes.Remove(stepIndex - 1);
+            EditorGUILayout.LabelField("y",GUILayout.Width(6));
+        }
+        if (listeOfCondNo.Contains(stepIndex - 1))
+        {
+            listeOfCondNo.Remove(stepIndex - 1);
+            EditorGUILayout.LabelField("n",GUILayout.Width(6));
+        }
 
         s.type = (Utils.StepType)EditorGUILayout.Popup((int)s.type, System.Enum.GetNames(typeof(Utils.StepType)));
         s.grid[0, s.y] = Utils.enumToString(s.type);
@@ -309,6 +338,8 @@ public class CSVEditor : EditorWindow
                     s.grid[1, s.y] = (0).ToString();
                 s.grid[1, s.y] = (EditorGUILayout.IntField(lineToGoTo)).ToString();//int value. The line to go.
                 break;
+                //////TO DO : 
+                /// add a breaEditorGUILayoutk line under it, and make a little "icon" or something where it point 
             case Utils.StepType.ConditionLine:
                 s.grid[1, s.y] = EditorGUILayout.TextField(s.grid[1, s.y]);//value to check
                 int lineIfWin, lineIfLoose = 0;
@@ -319,6 +350,10 @@ public class CSVEditor : EditorWindow
                 s.grid[2, s.y] = (EditorGUILayout.IntField(lineIfWin)).ToString();//int value. The line to go.
                 s.grid[3, s.y] = (EditorGUILayout.IntField(lineIfLoose)).ToString();//int value. The line to go.
                 //TO DO : a check if line is too high
+                //////TO DO : 
+                /// add a break line under it, and make a little "icon" or something where it point for TRUE and FALSE
+                listeOfCondYes.Add(lineIfWin);
+                listeOfCondNo.Add(lineIfLoose);
                 break;
             case Utils.StepType.ChangeValeur:
                 //boolean only
@@ -397,6 +432,10 @@ public class CSVEditor : EditorWindow
             stepToRemove = s;
         }
         EditorGUILayout.EndHorizontal();
+        if (s.type == Utils.StepType.NextLine)
+        {
+            EditorGUILayout.Separator();
+        }
     }
 
     [MenuItem("CatAclysle/CSV Edition/CSV from selected GameObject")]
@@ -740,6 +779,8 @@ public class CSVEditor : EditorWindow
         //end of writing
         Debug.Log("Update " + pathToTreat);
         AssetDatabase.Refresh();
+
+        displayFrame = 5;
 
         //Update finish
 

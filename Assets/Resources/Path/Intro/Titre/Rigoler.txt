@@ -1,0 +1,3 @@
+Desc	Ahah, on rigole bien hein ? 				
+Valu	BOOLBOOL	True			
+Desc	Grâce à ton rire, BOOLBOOL est redevenu heureux !				

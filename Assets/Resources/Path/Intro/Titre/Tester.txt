@@ -1,5 +1,11 @@
-Desc	This is a Tester				
+Desc	This is a test choice.				
+Desc	The description was already on place, but look at that : that's the new part ! 				
 Ciba	True	1			
-Desc	Olalala, je sens que ça bug				
+Desc	We are now in a movie !				
 Ciba	False	0,5			
-Desc	Non ? Si ? peut être ?				
+Coli	BOOLBOOL	6	8		
+Desc					
+Neli	10				
+Desc	End of the movie ! That was cool no ? 				
+Desc	I think it was cool !				
+Desc	Thanks for your attention !				
