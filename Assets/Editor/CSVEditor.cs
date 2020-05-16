@@ -35,6 +35,7 @@ public class CSVEditor : EditorWindow
     GameManager gM;
     List<string> roomsName;
     List<List<string>> zoneName;//one list of zone's name by room
+    List<List<string[]>> statesName; // one list of list with all the state of each zone
     List<List<List<string>>> interName;//one list of interaction id by zone
     //normally, that's all for now
 
@@ -405,6 +406,30 @@ public class CSVEditor : EditorWindow
 
                 s.grid[4, s.y] = EditorGUILayout.Toggle(s.grid[4, s.y] == true.ToString()) ? true.ToString() : false.ToString(); //Active or not 
                 break;
+            case Utils.StepType.ChangeState:                
+                if (!int.TryParse(s.grid[1, s.y], out indexOfRoom))
+                {
+                    s.grid[1, s.y] = (0).ToString();
+                }
+                indexOfRoom = Mathf.Min(indexOfRoom, roomsName.Count - 1);
+                s.grid[1, s.y] = (EditorGUILayout.Popup(indexOfRoom, roomsName.ToArray())).ToString();
+                indexOfZone = 0;
+                if (!int.TryParse(s.grid[2, s.y], out indexOfZone))
+                {
+                    s.grid[2, s.y] = (0).ToString();
+                }
+                indexOfZone = Mathf.Min(indexOfZone, zoneName[indexOfRoom].Count - 1);
+                s.grid[2, s.y] = (EditorGUILayout.Popup(indexOfZone, zoneName[indexOfRoom].ToArray())).ToString();
+                int indexOfState = 0;
+                if (!int.TryParse(s.grid[3, s.y], out indexOfState))
+                {
+                    s.grid[3, s.y] = (0).ToString();
+                }
+                indexOfState = Mathf.Min(indexOfState, interName[indexOfRoom][indexOfZone].Count - 1);
+                s.grid[3, s.y] = (EditorGUILayout.Popup(indexOfState, statesName[indexOfRoom][indexOfZone])).ToString();
+
+                s.grid[4, s.y] = EditorGUILayout.Toggle(s.grid[4, s.y] == true.ToString()) ? true.ToString() : false.ToString(); //Active or not 
+                break;
             case Utils.StepType.AddItem:
                 //ok, I need to either change that or to automize it
                 if (s.grid[1, s.y] == null)
@@ -552,6 +577,43 @@ public class CSVEditor : EditorWindow
                             }
                         }
                         break;
+                    case Utils.StepType.ChangeState:
+                        if (s.grid[1, s.y] == "" || s.grid[1, s.y] == null)
+                        {
+                            s.grid[1, s.y] = (0).ToString();
+                            if (s.grid[2, s.y] == "" || s.grid[2, s.y] == null)
+                                s.grid[1, s.y] = (0).ToString();
+                            if (s.grid[3, s.y] == "" || s.grid[3, s.y] == null)
+                                s.grid[3, s.y] = (0).ToString();
+                        }
+                        else
+                        {
+                            int res = roomsName.IndexOf(s.grid[1, s.y]);
+                            s.grid[1, s.y] = res.ToString();
+                            if (res == -1)
+                                Debug.LogError(s.grid[1, s.y] + " is not a room id");
+                            else
+                            {
+                                int res2 = zoneName[res].IndexOf(s.grid[2, s.y]);
+                                s.grid[2, s.y] = res2.ToString();
+                                if (res2 == -1)
+                                    Debug.LogError(s.grid[2, s.y] + " is not a zone id");
+                                else
+                                {
+                                    //
+                                    int res3 = -1;
+                                    for (int i = 0; i < statesName[res][res2].Length; i++)
+                                        if (s.grid[3, s.y] == statesName[res][res2][i])
+                                            res3 = i;
+                                    //
+                                    s.grid[3, s.y] = res3.ToString();
+                                    if (res3 == -1)
+                                        Debug.LogError(s.grid[3, s.y] + " is not a state");
+                                }
+                                
+                            }
+                        }
+                        break;
                     case Utils.StepType.Salle:
                         if (s.grid[1, s.y] == "" || s.grid[1, s.y] == null)
                             s.grid[1, s.y] = (0).ToString();
@@ -618,6 +680,7 @@ public class CSVEditor : EditorWindow
         gM = GameObject.FindObjectOfType<GameManager>();
         roomsName = new List<string>();
         zoneName = new List<List<string>>();
+        statesName = new List<List<string[]>>();
         interName = new List<List<List<string>>>();
         if (gM == null)
             Debug.Log("GameManagerInstance null");
@@ -634,6 +697,7 @@ public class CSVEditor : EditorWindow
                     roomsName.Add(r.id);
                     //do the same in an array for the Zone and then for the interaction
                     List<string> tmpZoneName = new List<string>();
+                    List<string[]> tmpZoneStates = new List<string[]>();
                     List<List<string>> tmpInterZoneName = new List<List<string>>();
                     foreach (Zone z in r.zones)
                     {
@@ -645,8 +709,10 @@ public class CSVEditor : EditorWindow
                             tmpInterName.Add(i.id);
                         }
                         tmpInterZoneName.Add(tmpInterName);
+                        tmpZoneStates.Add(z.stateName);
                     }
                     zoneName.Add(tmpZoneName);
+                    statesName.Add(tmpZoneStates);
                     interName.Add(tmpInterZoneName);
                     //End zone add
                 }
@@ -719,6 +785,14 @@ public class CSVEditor : EditorWindow
                         s.grid[2, s.y] = zoneName[indexOfRoom][indexOfZone]; 
                         int indexOfInter = int.Parse(s.grid[3, s.y]);
                         s.grid[3, s.y] = interName[indexOfRoom][indexOfZone][indexOfInter];
+                        break;
+                    case Utils.StepType.ChangeState:
+                        indexOfRoom = int.Parse(s.grid[1, s.y]);//normally, cannot be something else than 
+                        s.grid[1, s.y] = roomsName[indexOfRoom];
+                        indexOfZone = int.Parse(s.grid[2, s.y]);
+                        s.grid[2, s.y] = zoneName[indexOfRoom][indexOfZone]; 
+                        int indexOfState = int.Parse(s.grid[3, s.y]);
+                        s.grid[3, s.y] = statesName[indexOfRoom][indexOfZone][indexOfState];
                         break;
                     case Utils.StepType.Salle:
                         indexOfRoom = int.Parse(s.grid[1, s.y]);//normally, cannot be something else than 

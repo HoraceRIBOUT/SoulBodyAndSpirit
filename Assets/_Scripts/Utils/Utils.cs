@@ -23,6 +23,7 @@ public class Utils : MonoBehaviour {
         NextLine,
         ConditionLine,
         GoFight,
+        ChangeState,
         //filter on screen like the Midnight Waves one ? * - * ? TO DO 
     }
     public static StepType stringToEnum(string s)
@@ -69,6 +70,9 @@ public class Utils : MonoBehaviour {
                 break;
             case ("intr"):
                 res = StepType.ChangeInteraction;
+                break;
+            case ("stat"):
+                res = StepType.ChangeState;
                 break;
             case ("addi"):
                 res = StepType.AddItem;
@@ -135,6 +139,9 @@ public class Utils : MonoBehaviour {
                 break;
             case (StepType.ChangeInteraction):
                 res = "Intr"; ;
+                break;
+            case (StepType.ChangeState):
+                res = "Stat"; ;
                 break;
             case (StepType.AddItem):
                 res = "Addi"; ;

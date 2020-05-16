@@ -191,6 +191,9 @@ public class Scenario : MonoBehaviour {
             case (Utils.StepType.ChangeInteraction):
                 DisplayInteraction(currentStep);
                 break;
+            case (Utils.StepType.ChangeState):
+                DisplayChangeState(currentStep);
+                break;
             case (Utils.StepType.AddItem):
                 DisplayAddItem(currentStep);
                 break;
@@ -497,6 +500,29 @@ public class Scenario : MonoBehaviour {
     {
         StartFight();
         waitingForClick = true;
+    }
+
+    private void DisplayChangeState(Step giveStep)
+    {
+        ChangeStateOfThatZoneInThatRoom(giveStep.get(1),
+            giveStep.get(2), giveStep.get(3),
+            giveStep.get(4) == true.ToString());
+        displayNextStep();
+    }
+
+    private void ChangeStateOfThatZoneInThatRoom(string roomID, string zoneID, string state, bool value)
+    {
+        Debug.Log("For each room");
+        foreach (Room r in rooms)
+        {
+            if (r.id == roomID)
+            {
+                Debug.Log("Room find");
+                r.changeState(zoneID, state, value);
+                return;
+            }
+
+        }
     }
 
     [MyBox.ButtonMethod]

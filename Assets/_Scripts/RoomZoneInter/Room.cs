@@ -44,4 +44,16 @@ public class Room : MonoBehaviour {
         }
     }
 
+    public void changeState(string zoneID, string stateID, bool b)
+    {
+        foreach (Zone z in zones)
+        {
+            if (z.id == zoneID)
+            {
+                Debug.Log("Zone find");
+                z.changeState(stateID, b);
+            }
+        }
+    }
+
 }

@@ -15,6 +15,18 @@ public class Zone : MonoBehaviour {
 
     //TO DO : when a new interactions is create (well, wait for the end of the id no ? Maybe a button will be great) make a CSV for each interaction with just a desc on it ?
     public List<Interaction> interactions = new List<Interaction>();
+    public string[] stateName = { "Friend", "Fight", "Open", "TooFar", "NotHappy", "Dead" };
+    [System.Flags]
+    public enum States //idéalement, j'aimerais pouvoir avoir une liste de string et juste dire "tu remplaces les valeurs d'enum ici par ces string là en fait"... TO DO
+    {
+        Friend = (1 << 0), //1 in decimal
+        Fight = (1 << 1), //2 in decimal
+        Open = (1 << 2), //4 in decimal
+        TooFar = (1 << 3), //8 in decimal
+        NotHappy = (1 << 4), //16 in decimal
+        Dead = (1 << 5)  //32 in decimal
+    }
+    public States currentState = 0;//nothing
     //a way to change what's on the csv without having to fill by yourself (automatization !!!)
     public bool createCSV = false;
 
@@ -173,6 +185,51 @@ public class Zone : MonoBehaviour {
             }
         }
     }
+
+    public void changeState(string stateToChange, bool value)
+    {
+        int res = -1;
+        for (int i = 0; i < stateName.Length; i++)
+            if (stateToChange == stateName[i])
+                res = i;
+        if (res == -1)
+            Debug.LogError("No "+stateToChange+" in Zone "+id + " (room: "+ roomId +")");
+        changeState((Zone.States)(2^res), value);
+    }
+
+    public void changeState(Zone.States stateChange, bool value)
+    {
+       if(currentState.HasFlag(stateChange))
+        {
+            if (value)
+                return;//do nothing
+            currentState += (int)stateChange;
+        }
+       else
+        {
+            if (!value)
+                return;//do nothing
+            currentState -= (int)stateChange;
+        }
+    }
+
+
+
+
+
+
+    ////HARD RESET
+    ///
+
+    //[MyBox.ButtonMethod]
+    //public void HARDRESET_InteractionStateToNothing()
+    //{
+    //    foreach(Zone z in FindObjectsOfType<Zone>())
+    //    {
+    //        foreach (Interaction it in z.interactions)
+    //            it.activeForState = 0;
+    //    }
+    //}
 
 
 }
