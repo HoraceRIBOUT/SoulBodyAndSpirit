@@ -1,3 +1,5 @@
 Desc	Ahah, on rigole bien hein ? 				
 Valu	BOOLBOOL	True			
 Desc	Grâce à ton rire, BOOLBOOL est redevenu heureux !				
+Stat	Intro	Titre	NotHappy	True	
+Stat	Intro	Titre	Friend	False	

@@ -1,2 +1,4 @@
-Desc	This is a Hit			
-Desc	in a little box
+Desc	This is a Hit				
+Desc	in a little box				
+Stat	Intro	Titre	Dead	True	
+Stat	Intro	Titre	Fight	False	

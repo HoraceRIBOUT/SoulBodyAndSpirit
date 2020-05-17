@@ -1,13 +1,4 @@
 Desc	How dare you ?				
 Fite	in a little box				
 Desc	I AM UNDEFEATABLE !!!				
-Intr	Intro	Titre	Jouer	False	
-Intr	Intro	Titre	Option	False	
-Intr	Intro	Titre	Quitter	False	
-Intr	Intro	Titre	Tester	False	
-Intr	Intro	Titre	Rigoler	False	
-Intr	Intro	Titre	Invalider	False	
-Intr	Intro	Titre	Fight	False	
-Intr	Intro	Titre	Hit	True	
-Intr	Intro	Titre	CalmDown	True	
-Intr	Intro	Titre	Poke	True	
+Stat	Intro	Titre	Fight	True	

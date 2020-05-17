@@ -2044,61 +2044,79 @@ MonoBehaviour:
     item: 0
     pathToFollow: Intro/Titre/Jouer
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Option
     nameInChoice: Option
     item: 0
     pathToFollow: Intro/Titre/Option
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Quitter
     nameInChoice: Quit
     item: 0
     pathToFollow: Intro/Titre/Quitter
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Tester
     nameInChoice: Test
     item: 0
     pathToFollow: Intro/Titre/Tester
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Rigoler
     nameInChoice: Laugh
     item: 0
     pathToFollow: Intro/Titre/Rigoler
-    active: 0
+    active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Invalider
     nameInChoice: Invalidate
     item: 0
     pathToFollow: Intro/Titre/Invalider
-    active: 0
+    active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Fight
     nameInChoice: Fight
     item: 0
     pathToFollow: Intro/Titre/Fight
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Hit
     nameInChoice: Hit
     item: 0
     pathToFollow: Intro/Titre/Hit
     active: 0
+    activeForState: 3
     changeCSV: 0
   - id: CalmDown
     nameInChoice: Calm down
     item: 0
     pathToFollow: Intro/Titre/CalmDown
     active: 0
+    activeForState: 18
     changeCSV: 0
   - id: Poke
     nameInChoice: Poke
     item: 0
     pathToFollow: Intro/Titre/Poke
     active: 0
+    activeForState: 50
     changeCSV: 0
+  stateName:
+  - Friend
+  - Fight
+  - Open
+  - TooFar
+  - NotHappy
+  - Dead
+  currentState: 0
   createCSV: 0
   ULTRAENDDONTTOUCHIT: 0
   alreadyPressOnce: 0
@@ -4374,13 +4392,23 @@ MonoBehaviour:
     item: 0
     pathToFollow: Intro/Mission/Accepter
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Refuser
     nameInChoice: Refuser
     item: 0
     pathToFollow: Intro/Mission/Refuser
     active: 1
+    activeForState: 0
     changeCSV: 0
+  stateName:
+  - Friend
+  - Fight
+  - Open
+  - TooFar
+  - NotHappy
+  - Dead
+  currentState: 0
   createCSV: 0
   ULTRAENDDONTTOUCHIT: 0
   alreadyPressOnce: 0
@@ -5132,13 +5160,23 @@ MonoBehaviour:
     item: 0
     pathToFollow: Intro/Mission/Accepter
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Refuser
     nameInChoice: Refuser
     item: 0
     pathToFollow: Intro/Mission/Refuser
     active: 1
+    activeForState: 0
     changeCSV: 0
+  stateName:
+  - Friend
+  - Fight
+  - Open
+  - TooFar
+  - NotHappy
+  - Dead
+  currentState: 0
   createCSV: 0
   ULTRAENDDONTTOUCHIT: 0
   alreadyPressOnce: 0
@@ -5172,7 +5210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1442400043}
   m_Layer: 0
-  m_Name: Room
+  m_Name: Rooms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6784,13 +6822,23 @@ MonoBehaviour:
     item: 0
     pathToFollow: Intro/Mission/Accepter
     active: 1
+    activeForState: 0
     changeCSV: 0
   - id: Refuser
     nameInChoice: Refuser
     item: 0
     pathToFollow: Intro/Mission/Refuser
     active: 1
+    activeForState: 0
     changeCSV: 0
+  stateName:
+  - Friend
+  - Fight
+  - Open
+  - TooFar
+  - NotHappy
+  - Dead
+  currentState: 0
   createCSV: 0
   ULTRAENDDONTTOUCHIT: 0
   alreadyPressOnce: 0

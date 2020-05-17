@@ -194,27 +194,68 @@ public class Zone : MonoBehaviour {
                 res = i;
         if (res == -1)
             Debug.LogError("No "+stateToChange+" in Zone "+id + " (room: "+ roomId +")");
-        changeState((Zone.States)(2^res), value);
+        changeState((Zone.States)(Mathf.Pow(2,res)), value);
     }
 
     public void changeState(Zone.States stateChange, bool value)
     {
-       if(currentState.HasFlag(stateChange))
+        if (currentState.HasFlag(stateChange))
         {
             if (value)
                 return;//do nothing
-            currentState += (int)stateChange;
+            currentState -= (int)stateChange;
         }
        else
         {
             if (!value)
                 return;//do nothing
-            currentState -= (int)stateChange;
+            currentState += (int)stateChange;
+        }
+
+        VerifyState();
+    }
+
+    public void VerifyState()
+    {
+        //Changing state imply that all other interaction is deactivate
+        foreach(Interaction inter in interactions)
+        {
+            bool activeInteraction = true;// currentState.HasFlag(inter.activeForState);
+            //i prefer to verify if one of the neededState is the same as one of the currentState
+            activeInteraction = (currentState & inter.activeForState) != 0 ;
+
+            //exception :default interaction (the Nothing)
+            if (currentState == 0)
+                activeInteraction = (inter.activeForState == 0);
+
+            Debug.Log("How close ? "+ (currentState & inter.activeForState));
+            if (activeInteraction)
+            {
+                inter.active = true;
+            }
+            else
+            {
+                inter.active = false;
+            }
         }
     }
 
 
-
+    [MyBox.ButtonMethod]
+    public void AddFight()
+    {
+        changeState("Fight", true);
+    }
+    [MyBox.ButtonMethod]
+    public void RemoveFight()
+    {
+        changeState("Fight", false);
+    }
+    [MyBox.ButtonMethod]
+    public void AddDead()
+    {
+        changeState("Dead", true);
+    }
 
 
 
