@@ -3,11 +3,16 @@ Shader "ACalmPostProcess/VHS-effect"
 	Properties
 	{
 		_Blur("Blur Intensity", Range(0,0.01)) = 0.005 //(min = 0.0005)
-		_BlurForBlue("BlurForBlue Intensity", Range(0,0.01)) = 0.005
+		_BlurForColor("Blue for each color",Vector) = (0,0,0,0)
 
 		_MainTex("Texture", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
 		_OffsetBlue("Decalage du bleu", Vector) = (0.001,0.001,0,0) //_OffsetBlue store noise offset in z and w 
+		_OffsetRed("Decalage du rouge", Vector) = (0.001,0.001,0,0) //_OffsetBlue store noise offset in z and w 
+		_OffsetGreen("Decalage du vert", Vector) = (0.001,0.001,0,0) //_OffsetBlue store noise offset in z and w 
+		//_OffsetBluRound("Decalage du bleu  rond", float) = 0 //_OffsetBlue store noise offset in z and w 
+		//_OffsetRedRound("Decalage du rouge rond", float) = 0 //_OffsetBlue store noise offset in z and w 
+		//_OffsetGreRound("Decalage du vert  rond", float) = 0 //_OffsetBlue store noise offset in z and w 
 		_Saturation("Saturation", Range(0,2)) = 0.7
 		_NbIntensity("NoirEtBlanc", Range(0,2)) = 0.5
 
@@ -26,7 +31,11 @@ Shader "ACalmPostProcess/VHS-effect"
 		_Tram2("Tram2", float) = 2
 		_TramIntensity("Intensity", float) = 1
 		_TramColor("TramColor", Color) = (1,1,1,1)
+			
+		_Dilatation("Dilation", Range(-1,2)) = 0
 
+		_FloatEffect("Float Effect Intensity", Range(0,1)) = 0
+		_FloatNoiseDensity("Noise Density", Range(0,12)) = 4
 
 	}
 		SubShader
@@ -66,10 +75,12 @@ Shader "ACalmPostProcess/VHS-effect"
 			float4 _Color;
 
 			float _Blur;
-			float _BlurForBlue;
+			float4 _BlurForColor;
 
 			//COLOR PART 
 			float4 _OffsetBlue;
+			float4 _OffsetRed;
+			float4 _OffsetGreen;
 			float _Saturation;
 			float _NbIntensity;
 
@@ -96,14 +107,21 @@ Shader "ACalmPostProcess/VHS-effect"
 			float _TramIntensity;
 			float4 _TramColor;
 
+			float _Dilatation;
+			float _FloatEffect;
+			float _FloatNoiseDensity;
+
 			fixed4 frag(v2f i) : SV_Target
 			{
-
-				
-
 				//I.UV PART :
+				float2 offsetFromCenter = i.uv - float2(0.5,0.5);
+
+				i.uv += _FloatEffect * sin((offsetFromCenter + _Time.y) * _FloatNoiseDensity) * 0.02f;
+
+				i.uv += _Dilatation * offsetFromCenter;
+			    
 				//DECALAGE PART
-				i.uv = float2(frac(i.uv.x), frac(i.uv.y));
+				//i.uv = float2(frac(i.uv.x), frac(i.uv.y));
 
 				half positionLow = frac(_Hauteur + _Time * _Speed);
 				half positionUp = frac(positionLow + _Taille);
@@ -127,37 +145,63 @@ Shader "ACalmPostProcess/VHS-effect"
 				fixed4 col = tex2D(_MainTex, i.uv);
 
 				float blur = _Blur;
-				//BLUR BUT LOL
-				float4 totalValue = col;
-				totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y - blur));
-				totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y));
-				totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y + blur));
-				totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y - blur));
-				totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y + blur));
-				totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y - blur));
-				totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y));
-				totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y + blur));
-				col = totalValue / 9;
-				//BLUR PART END
+				////BLUR BUT LOL
+				//float4 totalValue = col;
+				///*totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y - blur));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y + blur));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y - blur));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y + blur));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y - blur));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y));
+				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y + blur));*/
+				////col = totalValue / 9;
+				////BLUR PART END
 
-				blur = _BlurForBlue;
+				blur = _BlurForColor.r;
 				//Decal Green;
-				float greenValue = tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x, i.uv.y + _OffsetBlue.y)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y - blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y + blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x, i.uv.y + _OffsetBlue.y - blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x, i.uv.y + _OffsetBlue.y + blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y - blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y + blur)).g;
-				greenValue /= 9;
+				float redValue = tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x, i.uv.y + _OffsetRed.y)).r;
+				/*redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y - blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y)).r;		r
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y + blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x,        i.uv.y + _OffsetRed.y - blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x,        i.uv.y + _OffsetRed.y + blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y - blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y)).r;		r
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y + blur)).r;*/
+				//redValue /= 9;
 
-				fixed4 colBlueDecal = fixed4(col.r * _Saturation,
+				blur = _BlurForColor.g;
+				//Decal Green;
+				float greenValue = tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x, i.uv.y + _OffsetGreen.y)).g;
+				/*greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y - blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y + blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x,        i.uv.y + _OffsetGreen.y - blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x,        i.uv.y + _OffsetGreen.y + blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y - blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y + blur)).g;*/
+				//greenValue /= 9;
+
+				blur = _BlurForColor.b;
+				//Decal Green;
+				float blueValue = tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x, i.uv.y + _OffsetBlue.y)).b;
+				/*blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y - blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y)       ).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y + blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x,        i.uv.y + _OffsetBlue.y - blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x,        i.uv.y + _OffsetBlue.y + blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y - blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y)       ).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y + blur)).b;*/
+				//blueValue /= 9;
+
+				fixed4 colDecal = fixed4(redValue * _Saturation,
 					greenValue * _Saturation,
-					col.b * _Saturation, col.a);
+					blueValue * _Saturation, col.a);
 
-				col = colBlueDecal;
+				col = colDecal;
 
 				//COLOR PART : Noir et Blanc
 				float greyValue = (col.r + col.g + col.b) / 3;

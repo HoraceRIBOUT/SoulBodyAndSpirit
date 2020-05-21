@@ -24,6 +24,7 @@ public class Utils : MonoBehaviour {
         ConditionLine,
         GoFight,
         ChangeState,
+        ChangeValeurZone,//TO DO 
         //filter on screen like the Midnight Waves one ? * - * ? TO DO 
     }
     public static StepType stringToEnum(string s)

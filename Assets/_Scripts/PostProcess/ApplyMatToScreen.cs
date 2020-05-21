@@ -9,10 +9,18 @@ public class ApplyMatToScreen : MonoBehaviour
     public class VHSShaderValue
     {
         public float blurIntensity = 0;
-        public float blurBlueIntensity = 0;
+        public Vector3 blurColorIntensity = Vector3.zero;
         //Couleur
         public Color tint = Color.white;
-        public Vector4 decalageBleu = Vector4.zero;
+        [Range(-0.005f, 0.005f)]
+        public float evenOffsetRed = 0;
+        [Range(-0.005f, 0.005f)]
+        public float evenOffsetGreen = 0;
+        [Range(-0.005f, 0.005f)]
+        public float evenOffsetBlue = 0;
+        public Vector2 decalageRoug = Vector4.zero;
+        public Vector2 decalageVert = Vector4.zero;
+        public Vector2 decalageBleu = Vector4.zero;
         public float saturation = 1;
         public float noirEtBlanc = 0;
         //Bug
@@ -28,14 +36,21 @@ public class ApplyMatToScreen : MonoBehaviour
         public float tramRythm = -2;
         public float tramIntensity = 0;
         public Color tramColor = Color.white;
+        //Float effect
+        [Range(0,1)]
+        public float floatEffectIntensity = 0;
+        [Range(0,12)]
+        public float floatNoiseDensity = 4;
 
         public VHSShaderValue()
         {
             blurIntensity = 0;
-            blurBlueIntensity = 0;
+            blurColorIntensity = Vector3.zero;
             //Couleur
             tint = Color.white;
-            decalageBleu = Vector4.zero;
+            decalageRoug = Vector2.zero;
+            decalageVert = Vector2.zero;
+            decalageBleu = Vector2.zero;
             saturation = 1;
             noirEtBlanc = 0;
             //Bug
@@ -51,6 +66,9 @@ public class ApplyMatToScreen : MonoBehaviour
             tramRythm = -2;
             tramIntensity = 0;
             tramColor = Color.white;
+
+            floatEffectIntensity = 0;
+            floatNoiseDensity = 4;
         }
     }
     public Camera mainCamera;
@@ -59,6 +77,7 @@ public class ApplyMatToScreen : MonoBehaviour
 
     public List<VHSShaderValue> targetEffect = new List<VHSShaderValue>();
     public AnimationCurve forTramIntensityTransition = AnimationCurve.Linear(0, 0, 1, 1);
+    public AnimationCurve forNoiseFloatDensityTransition = AnimationCurve.Linear(0, 0, 1, 1);
     [Range(0, 1)]
     public List<float> lerpForTarget = new List<float>();
     
@@ -138,10 +157,15 @@ public class ApplyMatToScreen : MonoBehaviour
 
         //Blur
         res.blurIntensity = Mathf.Lerp(val1.blurIntensity, val2.blurIntensity, lerp);
-        res.blurBlueIntensity = Mathf.Lerp(val1.blurBlueIntensity, val2.blurBlueIntensity, lerp);
+        res.blurColorIntensity = Vector3.Lerp(val1.blurColorIntensity, val2.blurColorIntensity, lerp);
         //Color
         res.tint = Color.Lerp(val1.tint, val2.tint, lerp);
-        res.decalageBleu = Vector4.Lerp(val1.decalageBleu, val2.decalageBleu, lerp);
+        res.evenOffsetRed = Mathf.Lerp(val1.evenOffsetRed, val2.evenOffsetRed, lerp);
+        res.evenOffsetGreen = Mathf.Lerp(val1.evenOffsetGreen, val2.evenOffsetGreen, lerp);
+        res.evenOffsetBlue = Mathf.Lerp(val1.evenOffsetBlue, val2.evenOffsetBlue, lerp);
+        res.decalageRoug = Vector2.Lerp(val1.decalageRoug, val2.decalageRoug, lerp);
+        res.decalageVert = Vector2.Lerp(val1.decalageVert, val2.decalageVert, lerp);
+        res.decalageBleu = Vector2.Lerp(val1.decalageBleu, val2.decalageBleu, lerp);
         res.saturation = Mathf.Lerp(val1.saturation, val2.saturation, lerp);
         res.noirEtBlanc = Mathf.Lerp(val1.noirEtBlanc, val2.noirEtBlanc, lerp);
         //Bug
@@ -158,16 +182,20 @@ public class ApplyMatToScreen : MonoBehaviour
         res.tramIntensity = Mathf.Lerp(val1.tramIntensity, val2.tramIntensity, forTramIntensityTransition.Evaluate(lerp));
         res.tramColor = Color.Lerp(val1.tramColor, val2.tramColor, lerp);
 
+        res.floatEffectIntensity = Mathf.Lerp(val1.floatEffectIntensity, val2.floatEffectIntensity, lerp);
+        res.floatNoiseDensity = Mathf.Lerp(val1.floatNoiseDensity, val2.floatNoiseDensity, forNoiseFloatDensityTransition.Evaluate(lerp));
         return res;
     }
 
     public void ApplyVHSValueOnMat(VHSShaderValue val, Material mat)
     {
         mat.SetFloat("_Blur", val.blurIntensity);
-        mat.SetFloat("_BlurForBlue", val.blurBlueIntensity);
+        mat.SetVector("_BlurForColor", val.blurColorIntensity);
 
         mat.SetColor("_Color", val.tint);
-        mat.SetVector("_OffsetBlue", val.decalageBleu);
+        mat.SetVector("_OffsetRed"  , val.decalageRoug + Vector2.one * val.evenOffsetRed);
+        mat.SetVector("_OffsetGreen", val.decalageVert + Vector2.one * val.evenOffsetGreen);
+        mat.SetVector("_OffsetBlue" , val.decalageBleu + Vector2.one * val.evenOffsetBlue);
         mat.SetFloat("_Saturation", val.saturation);
         mat.SetFloat("_NbIntensity", val.noirEtBlanc);
 
@@ -183,6 +211,9 @@ public class ApplyMatToScreen : MonoBehaviour
         mat.SetFloat("_Tram2", val.tramRythm);
         mat.SetFloat("_TramIntensity", val.tramIntensity);
         mat.SetColor("_TramColor", val.tramColor);
+
+        mat.SetFloat("_FloatEffect", val.floatEffectIntensity);
+        mat.SetFloat("_FloatNoiseDensity", val.floatNoiseDensity);
     }
 
     
@@ -194,5 +225,52 @@ public class ApplyMatToScreen : MonoBehaviour
         }
         matToApply.SetFloat("_LerpVal", 0);
         matToApply.SetFloat("_Saturation", 1);
+    }
+
+
+
+    //FOR DEBUG
+
+    [Header("For Debug")]
+    public int lerpIndexToChange = 1;
+    [MyBox.ButtonMethod]
+    public void FromZeroToOne()
+    {
+        StopAllCoroutines();
+        StartCoroutine(coroutineFromZeroToOne());
+    }
+    [MyBox.ButtonMethod]
+    public void FromOneToZero()
+    {
+        StopAllCoroutines();
+        StartCoroutine(coroutineFromOneToZero());
+    }
+
+    IEnumerator coroutineFromZeroToOne()
+    {
+        float lerpHere = lerpForTarget[lerpIndexToChange];
+        while(lerpHere < 1)
+        {
+            lerpHere += Time.deltaTime;
+            if (lerpHere > 1)
+                lerpHere = 1;
+
+            lerpForTarget[lerpIndexToChange] = lerpHere;
+            yield return new WaitForSeconds(1/120f);
+        }
+    }
+
+    IEnumerator coroutineFromOneToZero()
+    {
+        float lerpHere = lerpForTarget[lerpIndexToChange];
+        while (lerpHere > 0)
+        {
+            lerpHere -= Time.deltaTime;
+            if (lerpHere < 0)
+                lerpHere = 0;
+
+            lerpForTarget[lerpIndexToChange] = lerpHere;
+            yield return new WaitForSeconds(1 / 120f);
+        }
     }
 }
