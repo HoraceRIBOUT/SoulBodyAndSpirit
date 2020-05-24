@@ -32,7 +32,11 @@ Shader "ACalmPostProcess/VHS-effect"
 		_TramIntensity("Intensity", float) = 1
 		_TramColor("TramColor", Color) = (1,1,1,1)
 			
-		_Dilatation("Dilation", Range(-1,2)) = 0
+		_Dilatation("Dilation", Range(0,1)) = 0
+		_PinchPointX("PinchPoint X", Range(0,1)) = 0.5
+		_PinchPointY("PinchPoint Y", Range(0,1)) = 0.5
+		_WaveSummit("Wave Summit", Range(0,0.7)) = 0.25
+
 
 		_FloatEffect("Float Effect Intensity", Range(0,1)) = 0
 		_FloatNoiseDensity("Noise Density", Range(0,12)) = 4
@@ -108,17 +112,41 @@ Shader "ACalmPostProcess/VHS-effect"
 			float4 _TramColor;
 
 			float _Dilatation;
+			float _PinchPointX;
+			float _PinchPointY;
+			float _WaveSummit;
+
+
 			float _FloatEffect;
 			float _FloatNoiseDensity;
+
+			//Debug
+			float _debug1;
+			float _debug2;
+
+
+
 
 			fixed4 frag(v2f i) : SV_Target
 			{
 				//I.UV PART :
-				float2 offsetFromCenter = i.uv - float2(0.5,0.5);
+				//Last chance : 
+				float2 uv;
+				float2 delta = i.uv - float2(_PinchPointX, _PinchPointY);
+				float len = length(delta);
+				float2 direction = normalize(delta);
+				len = len - _WaveSummit;
+				float signX = sign(len);
+				len = len * signX;
+				len = len - _WaveSummit;
+				uv = len * direction;
 
+				i.uv += uv * _Dilatation;
+				//
+
+				float2 offsetFromCenter = i.uv - float2(0.5, 0.5);
 				i.uv += _FloatEffect * sin((offsetFromCenter + _Time.y) * _FloatNoiseDensity) * 0.02f;
-
-				i.uv += _Dilatation * offsetFromCenter;
+				
 			    
 				//DECALAGE PART
 				//i.uv = float2(frac(i.uv.x), frac(i.uv.y));

@@ -354,8 +354,8 @@ public class Scenario : MonoBehaviour {
         }
         nbrZoneSous = 0;
         zoneSous.Clear();
-        Invoke("ChangeRoom", 1f);
-        Invoke("FollowTransition", 2f);
+        Invoke("ChangeRoom", 1f);//TO DO : better here
+        Invoke("FollowTransition", 2f); // TO DO : no invoke for god damn sake !
 
         if (roomID.Contains("First")) 
             GameManager.Instance.sonMaster.ChangeToFirstScene();
@@ -365,6 +365,7 @@ public class Scenario : MonoBehaviour {
 
     private void ChangeRoom()
     {
+        //TO DO : add some transition IN and OUT ? maybe ? or a brutal one still
         currentRoom.gameObject.SetActive(false);
         currentRoom = nextRoom;
         currentRoom.gameObject.SetActive(true);
@@ -522,6 +523,17 @@ public class Scenario : MonoBehaviour {
                 return;
             }
 
+        }
+    }
+
+
+    [MyBox.ButtonMethod]
+    private void GetAllRooms()
+    {
+        rooms.Clear();
+        foreach(Room r in FindObjectsOfType<Room>())
+        {
+            rooms.Add(r);
         }
     }
 

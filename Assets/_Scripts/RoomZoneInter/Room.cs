@@ -56,4 +56,18 @@ public class Room : MonoBehaviour {
         }
     }
 
+    //Tools only
+    [MyBox.ButtonMethod()]
+    public void IWorkOnThis()
+    {
+        List<Room> roomList = FindObjectOfType<GameManager>().scenario.rooms;
+        foreach (Room room in roomList)
+        {
+            if (room.id != this.id)
+                room.gameObject.SetActive(false);
+            else
+                room.gameObject.SetActive(true);
+        }
+    }
+
 }
