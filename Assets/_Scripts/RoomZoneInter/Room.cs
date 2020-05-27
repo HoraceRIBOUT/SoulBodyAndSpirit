@@ -68,6 +68,8 @@ public class Room : MonoBehaviour {
             else
                 room.gameObject.SetActive(true);
         }
+
+        FindObjectOfType<GameManager>().scenario.currentRoom = this;
     }
 
 }
