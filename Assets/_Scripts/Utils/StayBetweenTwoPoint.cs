@@ -9,10 +9,12 @@ public class StayBetweenTwoPoint : MonoBehaviour
 
     public bool scaleOnX = false;
     public bool forgetZDistance = true;
+    public bool startOffset = false;
 
     private Vector3 lastPointA;
     private Vector3 lastPointB;
 
+    private Vector3 startOffsetVec;
     private float distanceForOne;
     private Vector3 startScale;
     private float zDepth;
@@ -30,7 +32,11 @@ public class StayBetweenTwoPoint : MonoBehaviour
         distanceForOne = (lastPointA - lastPointB).magnitude;
         startScale = this.transform.localScale;
         zDepth = this.transform.localPosition.z;
-
+        
+        if (startOffset)
+            startOffsetVec = this.transform.position - ((lastPointA + lastPointB) / 2f);
+        else
+            startOffsetVec = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -44,12 +50,12 @@ public class StayBetweenTwoPoint : MonoBehaviour
             lastPointA = pointA.position;
             lastPointB = pointB.position;
             if (forgetZDistance)
-                this.transform.position = (lastPointA + lastPointB) / 2f;
+                this.transform.position = startOffsetVec + ((lastPointA + lastPointB) / 2f);
             else
             {
                 lastPointA.z = zDepth;
                 lastPointB.z = zDepth;
-                this.transform.position = (lastPointA + lastPointB) / 2f;
+                this.transform.position = startOffsetVec + ((lastPointA + lastPointB) / 2f);
             }
 
             if (scaleOnX)
