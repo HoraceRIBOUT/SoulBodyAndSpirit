@@ -10,16 +10,19 @@ public class LightAnimRotPosScale : MonoBehaviour
     public float speed = 1f;
 
     [Header("Position")]
+    public bool movePos = true;
     public Vector3 startPosition = Vector3.zero;
     public Vector3 endPosition = Vector3.zero;
     public AnimationCurve wayToGoesPos;
     
     [Header("Rotation")]
+    public bool moveRot = true;
     public Vector3 startRotation = Vector3.zero;
     public Vector3 endRotation = Vector3.zero;
     public AnimationCurve wayToGoesRot;
 
     [Header("Scale")]
+    public bool moveScale = true;
     public Vector3 startScale = Vector3.one;
     public Vector3 endScale = Vector3.one;
     public AnimationCurve wayToGoesScale;
@@ -46,10 +49,12 @@ public class LightAnimRotPosScale : MonoBehaviour
             lerpValue = 1;
             goesEnd = false;
         }
-
-        this.transform.localPosition =Vector3.Lerp(startPosition, endPosition, wayToGoesPos.Evaluate(lerpValue));
-        this.transform.localRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, wayToGoesRot.Evaluate(lerpValue)));
-        this.transform.localRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, wayToGoesScale.Evaluate(lerpValue)));
+        if(movePos)
+            this.transform.localPosition =Vector3.Lerp(startPosition, endPosition, wayToGoesPos.Evaluate(lerpValue));
+        if(moveRot)
+            this.transform.localRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, wayToGoesRot.Evaluate(lerpValue)));
+        if(moveScale)
+            this.transform.localRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, wayToGoesScale.Evaluate(lerpValue)));
 
     }
 
