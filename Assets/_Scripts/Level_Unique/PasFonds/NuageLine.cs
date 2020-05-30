@@ -22,7 +22,7 @@ public class NuageLine : MonoBehaviour
     public List<CloudInfo> listOfPossibleCloud = new List<CloudInfo>();
     public GameObject emptyPrefab;
 
-    private List<GameObject> cloudSpawned = new List<GameObject>();
+    public List<GameObject> cloudSpawned = new List<GameObject>();
     private float currentXPosOfNextCloud;
 
     // Update is called once per frame
