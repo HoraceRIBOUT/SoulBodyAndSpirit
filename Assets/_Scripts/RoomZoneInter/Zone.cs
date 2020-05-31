@@ -145,14 +145,16 @@ public class Zone : MonoBehaviour {
         {
             alreadyPressOnce = true;
             print("Call call call "+this.name + " ---" + this.id);
-            StartCoroutine(waitForEnd());
-            if (id == "Dragon")
-                GameManager.Instance.sonMaster.ChangeToSifflement();
-            if (id == "Fenetre")
-            {
-                GameManager.Instance.sonMaster.ChangeToCombat();
-                GameManager.Instance.sonMaster.ChangeToHarpCore();
-            }
+
+            //Music stuff 
+            //StartCoroutine(waitForEnd());
+            //if (id == "Dragon")
+            //    GameManager.Instance.sonMaster.ChangeToSifflement();
+            //if (id == "Fenetre")
+            //{
+            //    GameManager.Instance.sonMaster.ChangeToCombat();
+            //    GameManager.Instance.sonMaster.ChangeToHarpCore();
+            //}
         }
 
 

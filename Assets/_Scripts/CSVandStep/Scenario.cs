@@ -86,7 +86,7 @@ public class Scenario : MonoBehaviour {
                 MouseOnSomething();
         }
 
-
+        //TO DO : add the option to change name of thing (depending on state ? option to change state of object ? why not !)
         if (dicoBool.ContainsKey("princesseVu") && dicoBool["princesseVu"])
         {
             GameObject.Find("RideauFenetre").GetComponent<Zone>().correctName = "Princesse";

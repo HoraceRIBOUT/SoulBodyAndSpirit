@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour {
     public UI_Holder ui_holder;
     public Scenario scenario;
     public SonMaster sonMaster;
+    public Perso perso;
 
     public Camera cam;
 

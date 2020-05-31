@@ -24,36 +24,36 @@ public class Perso : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKey(KeyCode.UpArrow))
+        bool goUp = Input.GetKey(KeyCode.UpArrow);
+        bool goDown = Input.GetKey(KeyCode.DownArrow);
+        bool goLeft = Input.GetKey(KeyCode.LeftArrow);
+        bool goRight = Input.GetKey(KeyCode.RightArrow);
+
+        if (goUp)
         {
             this.transform.position += speedMove.y * Time.deltaTime * Vector3.up;
             this.transform.localScale -= speedScale.y * Time.deltaTime * Vector3.one;
-            _animBody.SetBool("GoHaut", true);
         }
-        else
-            _animBody.SetBool("GoHaut", false);
-        if (Input.GetKey(KeyCode.DownArrow))
+        _animBody.SetBool("GoHaut", goUp);
+        
+        if (goDown)
         {
             this.transform.position += speedMove.y * Time.deltaTime * Vector3.down;
             this.transform.localScale += speedScale.y * Time.deltaTime * Vector3.one;
-            _animBody.SetBool("GoBas", true);
         }
-        else
-            _animBody.SetBool("GoBas", false);
-        if (Input.GetKey(KeyCode.LeftArrow))
+            _animBody.SetBool("GoBas", goDown);
+
+        if (goLeft)
         {
             this.transform.position += speedMove.x * Time.deltaTime * Vector3.left;
-            _animBody.SetBool("GoGauche", true);
         }
-        else
-            _animBody.SetBool("GoGauche", false);
-        if (Input.GetKey(KeyCode.RightArrow))
+            _animBody.SetBool("GoGauche", goLeft);
+
+        if (goRight)
         {
             this.transform.position += speedMove.x * Time.deltaTime * Vector3.right;
-            _animBody.SetBool("GoDroite", true);
         }
-        else
-            _animBody.SetBool("GoDroite", false);
+            _animBody.SetBool("GoDroite", goRight);
 
 
         if (Input.GetKeyDown(KeyCode.Space))
