@@ -19,9 +19,7 @@ public class MoveWithoutChild : MonoBehaviour
         if (lastPosition != this.transform.localPosition)
         {
             if (activate)
-            {
                 ChildReplacement();
-            }
             lastPosition = this.transform.localPosition;
         }
     }
@@ -29,12 +27,14 @@ public class MoveWithoutChild : MonoBehaviour
     void ChildReplacement()
     {
         Vector3 offset = lastPosition - this.transform.localPosition;
+        
+        offset = Quaternion.Inverse(this.transform.rotation) * offset;
+
         offset.x /= this.transform.localScale.x;
         offset.y /= this.transform.localScale.y;
         offset.z /= this.transform.localScale.z;
+
         for (int childI = 0; childI < transform.childCount; childI++)
-        {
             transform.GetChild(childI).localPosition += offset;
-        }
     }
 }
