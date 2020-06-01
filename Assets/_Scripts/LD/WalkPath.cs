@@ -6,7 +6,33 @@ public class WalkPath : MonoBehaviour
 {
     public List<WalkPath_Dot> wholePath_Dots;
 
-    
+    public void GoesToClosestDot(Vector3 positionInSpace)
+    {
+        //distance min
+        foreach (WalkPath_Dot dot in wholePath_Dots)
+        {
+            //min dist
+        }
+
+
+
+
+    }
+
+    public void GoesToThisPoint()
+    {
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
     [MyBox.ButtonMethod()]

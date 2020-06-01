@@ -13,6 +13,7 @@ public class NuageLine : MonoBehaviour
     [System.Serializable()]
     public struct CloudInfo
     {
+        public bool active;
         public Sprite sprite;
         public float sizeX;
         public float offsetY;
@@ -22,13 +23,40 @@ public class NuageLine : MonoBehaviour
     public List<CloudInfo> listOfPossibleCloud = new List<CloudInfo>();
     public GameObject emptyPrefab;
 
-    public List<GameObject> cloudSpawned = new List<GameObject>();
+    public List<infoNuage> cloudSpawned = new List<infoNuage>();
     private float currentXPosOfNextCloud;
+
+    private void Start()
+    {
+        if (!Application.isPlaying)
+            return;
+        FillOffCloud();
+    }
 
     // Update is called once per frame
     void Update()
     {
         //will work on a movement and then a despawn when too far on one side and respawn the other side
+        if (!Application.isPlaying)
+            return;
+
+        float moveX = speed * Time.deltaTime;
+        currentXPosOfNextCloud -= moveX;
+        Vector3 move = Vector3.left * moveX;
+
+        foreach (infoNuage info in cloudSpawned)
+        {
+            info.transform.Translate(move);
+
+            if (info.transform.localPosition.x < posMinMax.x - (info.size/2f) )
+            {
+                currentXPosOfNextCloud += (info.size/2f);
+                info.transform.localPosition = Vector3.right * (currentXPosOfNextCloud * this.transform.localScale.x ) + Vector3.up * info.transform.localPosition.y;
+                currentXPosOfNextCloud += (info.size / 2f);
+            }
+        }
+
+
     }
 
 
@@ -50,6 +78,10 @@ public class NuageLine : MonoBehaviour
             lastRandom = random;
             //
 
+            //Because I don't want to destroy what I have make
+            if (!listOfPossibleCloud[random].active)
+                continue;
+
 
             GameObject newCloud = Instantiate(emptyPrefab, this.transform);
             SpriteRenderer sR = newCloud.AddComponent<SpriteRenderer>();
@@ -61,12 +93,14 @@ public class NuageLine : MonoBehaviour
 
             newCloud.transform.localPosition = Vector3.right * (currentXPosOfNextCloud + listOfPossibleCloud[random].sizeX * 0.5f * randomSizeX) + Vector3.up * listOfPossibleCloud[random].offsetY;
             newCloud.transform.localScale = new Vector3(randomSizeX, 1,1);
+            newCloud.name = "Cloud " + security;
 
             currentXPosOfNextCloud += listOfPossibleCloud[random].sizeX * randomSizeX;
 
+            infoNuage infoNuage = newCloud.AddComponent<infoNuage>();
+            infoNuage.size = listOfPossibleCloud[random].sizeX * randomSizeX;
 
-            newCloud.name = "Cloud " + security;
-            cloudSpawned.Add(newCloud);
+            cloudSpawned.Add(infoNuage);
 
             if (currentXPosOfNextCloud < posMinMax.y)
                 continue;
@@ -79,9 +113,9 @@ public class NuageLine : MonoBehaviour
     [MyBox.ButtonMethod()]
     public void DestroyAllCloud()
     {
-        foreach (GameObject cloud in cloudSpawned)
+        foreach (infoNuage cloud in cloudSpawned)
         {
-            DestroyImmediate(cloud);
+            DestroyImmediate(cloud.gameObject);
         }
         cloudSpawned.Clear();
     }

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Perso : MonoBehaviour
 {
-
-
     public Animator _animBody = new Animator();
     public Animator _animFace = new Animator();
     public SpriteRenderer _faceTMP;
@@ -16,13 +14,26 @@ public class Perso : MonoBehaviour
     public Vector2 speedMove = new Vector2(5f, 2.5f);
     public Vector2 speedScale = new Vector2(0, 0.2f);
 
-
-    // Start is called before the first frame update
-    void Start()
+    
+    public void Update()
     {
+        MoveManagement();
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            indexForFace++;
+            if (indexForFace == faceSprite.Count)
+                indexForFace = 0;
+            _faceTMP.sprite = faceSprite[indexForFace];
+        }
     }
 
-    public void Update()
+    public void MoveManagement()
+    {
+        
+    }
+
+    public void _obsoleteMoveManagement()
     {
         bool goUp = Input.GetKey(KeyCode.UpArrow);
         bool goDown = Input.GetKey(KeyCode.DownArrow);
@@ -35,33 +46,24 @@ public class Perso : MonoBehaviour
             this.transform.localScale -= speedScale.y * Time.deltaTime * Vector3.one;
         }
         _animBody.SetBool("GoHaut", goUp);
-        
+
         if (goDown)
         {
             this.transform.position += speedMove.y * Time.deltaTime * Vector3.down;
             this.transform.localScale += speedScale.y * Time.deltaTime * Vector3.one;
         }
-            _animBody.SetBool("GoBas", goDown);
+        _animBody.SetBool("GoBas", goDown);
 
         if (goLeft)
         {
             this.transform.position += speedMove.x * Time.deltaTime * Vector3.left;
         }
-            _animBody.SetBool("GoGauche", goLeft);
+        _animBody.SetBool("GoGauche", goLeft);
 
         if (goRight)
         {
             this.transform.position += speedMove.x * Time.deltaTime * Vector3.right;
         }
-            _animBody.SetBool("GoDroite", goRight);
-
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            indexForFace++;
-            if (indexForFace == faceSprite.Count)
-                indexForFace = 0;
-            _faceTMP.sprite = faceSprite[indexForFace];
-        }
+        _animBody.SetBool("GoDroite", goRight);
     }
 }

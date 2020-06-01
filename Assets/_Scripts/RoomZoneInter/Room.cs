@@ -6,6 +6,7 @@ public class Room : MonoBehaviour {
 
     public string id;
     public List<Zone> zones = new List<Zone>();
+    public WalkPath walkPath;
 
     // Use this for initialization
     void Start () {

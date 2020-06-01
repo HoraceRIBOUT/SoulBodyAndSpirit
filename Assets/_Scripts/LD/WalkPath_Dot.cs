@@ -8,6 +8,11 @@ public class WalkPath_Dot : MonoBehaviour
     public float scale = 1f;
     public int orderInLayer = 0;
 
-    public Color colorHere = Color.white;
+    struct nextDot
+    {
+        WalkPath_Dot dot;
+        
+    }
 
+    public Color colorHere = Color.white;
 }
