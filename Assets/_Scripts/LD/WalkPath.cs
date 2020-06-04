@@ -152,4 +152,27 @@ public class WalkPath : MonoBehaviour
             wholePath_Dots.Add(dot);
         }
     }
+
+    [MyBox.ButtonMethod()]
+    public void AddAllNeighboursFromStart()
+    {
+        List<WalkPath_Dot> newDots = new List<WalkPath_Dot>();
+
+        foreach (WalkPath_Dot dot in wholePath_Dots)
+        {
+            foreach (WalkPath_Dot.nextDot nextDot in dot.dotsLink)
+                if (!wholePath_Dots.Contains(nextDot.dot) && !newDots.Contains(nextDot.dot))
+                    newDots.Add(nextDot.dot);
+        }
+
+        if (newDots.Count != 0)
+        {
+            foreach(WalkPath_Dot dot in newDots)
+            {
+                wholePath_Dots.Add(dot);
+            }
+            AddAllNeighboursFromStart();
+        }
+
+    }
 }

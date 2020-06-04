@@ -14,6 +14,7 @@ public class Perso : MonoBehaviour
 
     public Vector2 speedMove = new Vector2(5f, 2.5f);
     public Vector2 speedScale = new Vector2(0, 0.2f);
+    public bool speedDependOnScale = true;
 
     
     public void Update()
@@ -83,11 +84,13 @@ public class Perso : MonoBehaviour
         foreach (WalkPath_Dot dot in path)
         {
             float distance = (dot.transform.position - previousPos).magnitude;
+            float duration = distance / speedMove.x;
+            duration /= (speedDependOnScale ? dot.scale : 1f);
             //maybe a speed = move.x and move.y depending on the direction of movement ?
-            s.Append(transform.DOMove(dot.transform.position, distance / speedMove.x))
+            s.Append(transform.DOMove(dot.transform.position, duration))
                 .SetEase(Ease.Linear);
             previousPos = dot.transform.position;
-            s.Join(transform.DOScale(dot.scale, distance / speedMove.x));
+            s.Join(transform.DOScale(dot.scale, duration));
             //s.Join();
             //add some info for the animation here
         }
@@ -95,7 +98,29 @@ public class Perso : MonoBehaviour
 
     }
 
+    private bool alreadyOnPoint = false;
+    public Vector3 lastPos;
+    public Vector3 lastScale;
 
+    public void SavePosAndTP()
+    {
+        if (!alreadyOnPoint)
+        {
+            alreadyOnPoint = true;
+            lastPos = this.transform.position;
+            lastScale = this.transform.localScale;
+        }
+    }
+    [MyBox.ButtonMethod()]
+    public void GoesBackToLastPos()
+    {
+        if (alreadyOnPoint)
+        {
+            alreadyOnPoint = false;
+            this.transform.position = lastPos;
+            this.transform.localScale = lastScale;
+        }
+    }
 
 
     ////

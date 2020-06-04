@@ -18,4 +18,21 @@ public class WalkPath_Dot : MonoBehaviour
     public List<nextDot> dotsLink = new List<nextDot>();
 
     public Color colorHere = Color.white;
+    
+
+
+    //TO DO : pause hero here. Unpause hero there
+    [MyBox.ButtonMethod()]
+    public void TransportHeroHere()
+    {
+        Perso perso = FindObjectOfType<Perso>();
+        perso.SavePosAndTP();
+
+        perso.transform.position = this.transform.position;
+        perso.transform.localScale = Vector3.one * scale;
+
+    }
+
+
+
 }
