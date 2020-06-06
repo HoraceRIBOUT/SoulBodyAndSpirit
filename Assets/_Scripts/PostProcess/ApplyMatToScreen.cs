@@ -8,6 +8,8 @@ public class ApplyMatToScreen : MonoBehaviour
     [System.Serializable]
     public class VHSShaderValue
     {
+        public Texture mask;
+
         public float blurIntensity = 0;
         public Vector3 blurColorIntensity = Vector3.zero;
         //Couleur
@@ -21,7 +23,15 @@ public class ApplyMatToScreen : MonoBehaviour
         public Vector2 decalageRoug = Vector4.zero;
         public Vector2 decalageVert = Vector4.zero;
         public Vector2 decalageBleu = Vector4.zero;
+
+
         public float saturation = 1;
+        [Range(0f, 2f)]
+        public float redIntensity = 0;
+        [Range(0f, 2f)]
+        public float greenIntensity = 0;
+        [Range(0f, 2f)]
+        public float blueIntensity = 0;
         public float noirEtBlanc = 0;
         //Bug
         public float tailleBug = 0;
@@ -52,6 +62,9 @@ public class ApplyMatToScreen : MonoBehaviour
             decalageVert = Vector2.zero;
             decalageBleu = Vector2.zero;
             saturation = 1;
+            redIntensity = 1;
+            greenIntensity = 1;
+            blueIntensity = 1;
             noirEtBlanc = 0;
             //Bug
             tailleBug = 0;
@@ -154,7 +167,7 @@ public class ApplyMatToScreen : MonoBehaviour
     {
         VHSShaderValue res = new VHSShaderValue();
         lerp = Mathf.Clamp01(lerp);
-
+        
         //Blur
         res.blurIntensity = Mathf.Lerp(val1.blurIntensity, val2.blurIntensity, lerp);
         res.blurColorIntensity = Vector3.Lerp(val1.blurColorIntensity, val2.blurColorIntensity, lerp);
@@ -167,6 +180,9 @@ public class ApplyMatToScreen : MonoBehaviour
         res.decalageVert = Vector2.Lerp(val1.decalageVert, val2.decalageVert, lerp);
         res.decalageBleu = Vector2.Lerp(val1.decalageBleu, val2.decalageBleu, lerp);
         res.saturation = Mathf.Lerp(val1.saturation, val2.saturation, lerp);
+        res.redIntensity = Mathf.Lerp(val1.redIntensity, val2.redIntensity, lerp);
+        res.greenIntensity = Mathf.Lerp(val1.greenIntensity, val2.greenIntensity, lerp);
+        res.blueIntensity = Mathf.Lerp(val1.blueIntensity, val2.blueIntensity, lerp);
         res.noirEtBlanc = Mathf.Lerp(val1.noirEtBlanc, val2.noirEtBlanc, lerp);
         //Bug
         res.tailleBug = Mathf.Lerp(val1.tailleBug, val2.tailleBug, lerp);
@@ -197,6 +213,9 @@ public class ApplyMatToScreen : MonoBehaviour
         mat.SetVector("_OffsetGreen", val.decalageVert + Vector2.one * val.evenOffsetGreen);
         mat.SetVector("_OffsetBlue" , val.decalageBleu + Vector2.one * val.evenOffsetBlue);
         mat.SetFloat("_Saturation", val.saturation);
+        mat.SetFloat("_RedIntensity", val.redIntensity);
+        mat.SetFloat("_GreenIntensity", val.greenIntensity);
+        mat.SetFloat("_BlueIntensity", val.blueIntensity);
         mat.SetFloat("_NbIntensity", val.noirEtBlanc);
 
         mat.SetFloat("_Taille", val.tailleBug);

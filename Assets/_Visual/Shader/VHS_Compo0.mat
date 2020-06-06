@@ -47,6 +47,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _MaskTexture:
+        m_Texture: {fileID: 10307, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -65,24 +69,26 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Aperture: 228
-    - _Blur: 0
+    - _BlueIntensity: 0.53
+    - _Blur: 1
     - _BlurForBlue: 0
     - _BlurForGreen: 0
     - _BlurForRed: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _Decalage: 0
+    - _Decalage: 0.74
     - _DetailNormalMapScale: 1
     - _Dilatation: 0
     - _Distance: 0.302
     - _DrugEffect: 1.8
     - _DstBlend: 0
     - _FloatEffect: 0
-    - _FloatNoiseDensity: 1
+    - _FloatNoiseDensity: 11.31
     - _FloatSpeed: 0.008
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _GreenIntensity: 1.1
     - _Hauteur: 0.5
     - _INTENSITYWTF: 1.6
     - _Intensity: 2
@@ -98,17 +104,18 @@ Material:
     - _Parallax: 0.02
     - _PinchPointX: 0.563
     - _PinchPointY: 0.337
+    - _RedIntensity: 2
     - _ReducerWTF: 0.0027
-    - _Saturation: 1
+    - _Saturation: 0.91
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 0
+    - _Speed: 1
     - _SrcBlend: 1
-    - _Taille: 0
-    - _ToleranceBWNoise: 0
-    - _Tram2: 0
-    - _TramIntensity: 0
-    - _Tramage: 0
+    - _Taille: -0.96
+    - _ToleranceBWNoise: 0.67
+    - _Tram2: 1.77
+    - _TramIntensity: 1.25
+    - _Tramage: 2.35
     - _UVSec: 0
     - _WaveSummit: 0.3
     - _ZWrite: 1
@@ -116,12 +123,12 @@ Material:
     - _debug2: 2
     - _typeOfBug: 0
     m_Colors:
-    - _BlurForColor: {r: 0, g: 0, b: 0, a: 0}
+    - _BlurForColor: {r: 3.96, g: 1, b: 4, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoiseColor: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 0}
-    - _OffsetBlue: {r: 0, g: 0, b: 0, a: 0}
-    - _OffsetGreen: {r: 0, g: 0, b: 0, a: 0}
-    - _OffsetRed: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseColor: {r: 1, g: 0, b: 0, a: 0}
+    - _OffsetBlue: {r: -0.005, g: -0.005, b: 0, a: 0}
+    - _OffsetGreen: {r: -0.0007, g: -0.0007, b: 0, a: 0}
+    - _OffsetRed: {r: 0.005, g: 0.005, b: 0, a: 0}
     - _PinchPoint: {r: 0.5, g: 0.5, b: 0, a: 0}
-    - _TramColor: {r: 0, g: 1, b: 0.96201396, a: 0}
+    - _TramColor: {r: 0.3584906, g: 0, b: 0.1073628, a: 0}

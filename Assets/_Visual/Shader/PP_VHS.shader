@@ -2,6 +2,7 @@ Shader "ACalmPostProcess/VHS-effect"
 {
 	Properties
 	{
+		_MaskTexture("Mask Texture", 2D) = "white" {}
 		_Blur("Blur Intensity", Range(0,0.01)) = 0.005 //(min = 0.0005)
 		_BlurForColor("Blue for each color",Vector) = (0,0,0,0)
 
@@ -14,6 +15,9 @@ Shader "ACalmPostProcess/VHS-effect"
 		//_OffsetRedRound("Decalage du rouge rond", float) = 0 //_OffsetBlue store noise offset in z and w 
 		//_OffsetGreRound("Decalage du vert  rond", float) = 0 //_OffsetBlue store noise offset in z and w 
 		_Saturation("Saturation", Range(0,2)) = 0.7
+		_RedIntensity("Red Intensity", Range(0,2)) = 1
+		_GreenIntensity("Green Intensity", Range(0, 2)) = 1
+		_BlueIntensity("Bue Intensity", Range(0, 2)) = 1
 		_NbIntensity("NoirEtBlanc", Range(0,2)) = 0.5
 
 		_Hauteur("Hauteur du bug", Range(0,1)) = 0.5
@@ -76,6 +80,7 @@ Shader "ACalmPostProcess/VHS-effect"
 				}
 
 			sampler2D _MainTex;
+			sampler2D _MaskTexture;
 			float4 _Color;
 
 			float _Blur;
@@ -86,6 +91,9 @@ Shader "ACalmPostProcess/VHS-effect"
 			float4 _OffsetRed;
 			float4 _OffsetGreen;
 			float _Saturation;
+			float _RedIntensity;
+			float _GreenIntensity;
+			float _BlueIntensity;
 			float _NbIntensity;
 
 			//BUG PART
@@ -129,6 +137,7 @@ Shader "ACalmPostProcess/VHS-effect"
 
 			fixed4 frag(v2f i) : SV_Target
 			{
+				float2 save_uv = i.uv;
 				//I.UV PART :
 				//Last chance : 
 				float2 uv;
@@ -173,62 +182,50 @@ Shader "ACalmPostProcess/VHS-effect"
 				fixed4 col = tex2D(_MainTex, i.uv);
 
 				float blur = _Blur;
-				////BLUR BUT LOL
-				//float4 totalValue = col;
-				///*totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y - blur));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x - blur, i.uv.y + blur));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y - blur));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x       , i.uv.y + blur));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y - blur));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y));
-				//totalValue += tex2D(_MainTex, float2(i.uv.x + blur, i.uv.y + blur));*/
-				////col = totalValue / 9;
-				////BLUR PART END
 
-				blur = _BlurForColor.r;
+				blur = (_Blur + _BlurForColor.x) * 0.001f;
 				//Decal Green;
 				float redValue = tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x, i.uv.y + _OffsetRed.y)).r;
-				/*redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y - blur)).r;
-				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y)).r;		r
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y - blur)).r;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y       )).r;
 				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x - blur, i.uv.y + _OffsetRed.y + blur)).r;
 				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x,        i.uv.y + _OffsetRed.y - blur)).r;
 				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x,        i.uv.y + _OffsetRed.y + blur)).r;
 				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y - blur)).r;
-				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y)).r;		r
-				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y + blur)).r;*/
-				//redValue /= 9;
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y       )).r;		
+				redValue += tex2D(_MainTex, float2(i.uv.x + _OffsetRed.x + blur, i.uv.y + _OffsetRed.y + blur)).r;
+				redValue /= 9;
 
-				blur = _BlurForColor.g;
+				blur = (_Blur + _BlurForColor.y) * 0.001f;
 				//Decal Green;
 				float greenValue = tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x, i.uv.y + _OffsetGreen.y)).g;
-				/*greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y - blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y - blur)).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y       )).g;
 				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x - blur, i.uv.y + _OffsetGreen.y + blur)).g;
 				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x,        i.uv.y + _OffsetGreen.y - blur)).g;
 				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x,        i.uv.y + _OffsetGreen.y + blur)).g;
 				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y - blur)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y)).g;
-				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y + blur)).g;*/
-				//greenValue /= 9;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y       )).g;
+				greenValue += tex2D(_MainTex, float2(i.uv.x + _OffsetGreen.x + blur, i.uv.y + _OffsetGreen.y + blur)).g;
+				greenValue /= 9;
 
-				blur = _BlurForColor.b;
+				blur = (_Blur + _BlurForColor.z) * 0.001f;
 				//Decal Green;
 				float blueValue = tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x, i.uv.y + _OffsetBlue.y)).b;
-				/*blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y - blur)).b;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y - blur)).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y)       ).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x - blur, i.uv.y + _OffsetBlue.y + blur)).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x,        i.uv.y + _OffsetBlue.y - blur)).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x,        i.uv.y + _OffsetBlue.y + blur)).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y - blur)).b;
 				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y)       ).b;
-				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y + blur)).b;*/
-				//blueValue /= 9;
+				blueValue += tex2D(_MainTex, float2(i.uv.x + _OffsetBlue.x + blur, i.uv.y + _OffsetBlue.y + blur)).b;
+				blueValue /= 9;
 
-				fixed4 colDecal = fixed4(redValue * _Saturation,
-					greenValue * _Saturation,
-					blueValue * _Saturation, col.a);
-
+				fixed4 colDecal = fixed4(redValue * _Saturation * _RedIntensity,
+					greenValue * _Saturation * _GreenIntensity,
+					blueValue * _Saturation * _BlueIntensity, col.a);
+				
 				col = colDecal;
 
 				//COLOR PART : Noir et Blanc
@@ -252,7 +249,7 @@ Shader "ACalmPostProcess/VHS-effect"
 				colResultat += (_TramColor * tram) * _TramIntensity;
 				//END BLACK DOT NOISE AND TRAM
 				
-				return colResultat;
+				return lerp(tex2D(_MainTex, save_uv), colResultat, 1-tex2D(_MaskTexture, save_uv).a);
 			}
 			ENDCG
 		}
