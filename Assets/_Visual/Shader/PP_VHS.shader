@@ -3,6 +3,7 @@ Shader "ACalmPostProcess/VHS-effect"
 	Properties
 	{
 		_MaskTexture("Mask Texture", 2D) = "white" {}
+	    _MaskIntensity("Mask use", Range(-2,2)) = 1
 		_Blur("Blur Intensity", Range(0,0.01)) = 0.005 //(min = 0.0005)
 		_BlurForColor("Blue for each color",Vector) = (0,0,0,0)
 
@@ -81,6 +82,7 @@ Shader "ACalmPostProcess/VHS-effect"
 
 			sampler2D _MainTex;
 			sampler2D _MaskTexture;
+			float _MaskIntensity;
 			float4 _Color;
 
 			float _Blur;
@@ -249,7 +251,12 @@ Shader "ACalmPostProcess/VHS-effect"
 				colResultat += (_TramColor * tram) * _TramIntensity;
 				//END BLACK DOT NOISE AND TRAM
 				
-				return lerp(tex2D(_MainTex, save_uv), colResultat, 1-tex2D(_MaskTexture, save_uv).a);
+				float clampMask = 1 - tex2D(_MaskTexture, save_uv).a; 
+				//_MaskIntensity == 1  -> tex2D(_MaskTexture, save_uv).a
+				//_MaskIntensity == 0  -> 0
+				//_MaskIntensity == -1 -> 1 - tex2D(_MaskTexture, save_uv).a
+				clampMask = clamp(clampMask, 0, 1);
+				return lerp(tex2D(_MainTex, save_uv), colResultat, clampMask);
 			}
 			ENDCG
 		}
