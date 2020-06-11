@@ -19,6 +19,7 @@ public class AnimationHandler : MonoBehaviour
     [ContextMenu("Update Animators List")]
     public void UpdateAnimatorsNameList()
     {
+        //TO DO : Update only when needed
         if (animators.Count == 0)
         {
             foreach (Animator ani in GameObject.FindObjectsOfType<Animator>())
@@ -29,10 +30,10 @@ public class AnimationHandler : MonoBehaviour
         animatorsName = new List<string>();
         foreach (Animator an in animators)
         {
-            Debug.Log("One more : " + an.name);
+            //Debug.Log("One more : " + an.name);
             animatorsName.Add(an.name);
         }
-        Debug.Log("animatorsName have now " + animatorsName.Count + "member in it");
+        //Debug.Log("animatorsName have now " + animatorsName.Count + "member in it");
     }
 
     public float PlayAnimation(int indexOfAnimator, string nameOfTrigger, bool waitForEndOfAnimationOrNot)

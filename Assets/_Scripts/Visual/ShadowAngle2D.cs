@@ -41,21 +41,22 @@ public class ShadowAngle2D : MonoBehaviour
     void ChangeColorOfShadow()
     {
         TreatEachShadows(frontShadows, Vector3.back);
-        TreatEachShadows(upShadows, Vector3.up);//influence from rotation
+        TreatEachShadows(upShadows, Vector3.up, true);//influence from rotation
 
-        TreatEachShadows(leftShadows, Vector3.left);
-        TreatEachShadows(rightShadows, Vector3.right);
+        TreatEachShadows(leftShadows, Vector3.left, true);
+        TreatEachShadows(rightShadows, Vector3.right, true);
 
         // new Vector3(0, sP.transform.rotation.eulerAngles.z / 90, 1 - sP.transform.rotation.eulerAngles.z / 90); // ==> 0 basic left -90 ==> up
-
     }
 
-    private void TreatEachShadows(List<SpriteRenderer> listShadows, Vector3 vec)
+    private void TreatEachShadows(List<SpriteRenderer> listShadows, Vector3 vec, bool rotationInfluence = false)
     {
         foreach (SpriteRenderer sP in listShadows)
         {
             Color color = Color.black;
-            Vector3 myDirection = vec;
+            if(rotationInfluence)
+                vec = sP.transform.TransformDirection(vec);
+            Vector3 myDirection = vec.normalized;
             float dot = Mathf.Clamp01(Vector3.Dot(lightDirectionVector, myDirection));
             color.a = 1 - (dot + ambientLight);
             sP.color = color;

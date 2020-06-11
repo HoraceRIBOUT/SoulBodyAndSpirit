@@ -16,9 +16,13 @@ public class Perso : MonoBehaviour
     public Vector2 speedScale = new Vector2(0, 0.2f);
     public bool speedDependOnScale = true;
 
-    [Header("Movement point to point")]
-    public Sequence s;
-    
+    //[Header("Movement point to point")]
+
+
+    private bool alreadyOnPoint = false;
+    private Vector3 lastPos;
+    private Vector3 lastScale;
+
     public void Update()
     {
         MoveManagement();
@@ -30,22 +34,28 @@ public class Perso : MonoBehaviour
                 indexForFace = 0;
             _faceTMP.sprite = faceSprite[indexForFace];
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Hellooooooooo");
+            Debug.Break();
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Time.timeScale *= 2;
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Time.timeScale /= 2;
+        }
     }
 
     public void MoveManagement()
     {
         
     }
-
-
-
-
-
-
-    public AnimationCurve curveCurve;
-
-
-
 
     /// <summary>
     /// //Test
@@ -80,40 +90,44 @@ public class Perso : MonoBehaviour
     {
         WalkPath wp = GameManager.Instance.scenario.currentRoom.walkPath;
         List<WalkPath_Dot> path = wp.StartPath(fromThisDot, toThatDot);
-
-        Sequence s = DOTween.Sequence();
+        
         //s.SetEase(Ease.Linear);
-        Vector3 previousPos = this.transform.position;
-        foreach (WalkPath_Dot dot in path)
-        {
-            Vector3 direction = (dot.transform.position - previousPos);
-            float distance = direction.magnitude;
-            float duration = distance / speedMove.x;
-            duration /= (speedDependOnScale ? dot.scale : 1f);
-            //maybe a speed = move.x and move.y depending on the direction of movement ?
-            s.AppendCallback(() => ChangeAnimDirection(direction));
-            s.Append(transform.DOMove(dot.transform.position, duration).SetEase(Ease.Linear));
-            s.Join(transform.DOScale(dot.scale, duration).SetEase(Ease.Linear));
-            previousPos = dot.transform.position;
-        }
+        MakeNextStep(path);
         //s.AppendCallback(() => ChangeAnimDirection(Vector3.zero));
     }
 
     void MakeNextStep(List<WalkPath_Dot> path)
     {
+        if(path.Count == 0)
+        {
+            Debug.Log("Finish !");
+            EndMovement();
+            return;
+        }
+
         WalkPath_Dot dot = path[0];
+        //prepare next step
+        path.RemoveAt(0);
+
+        //Fill sequence
         Vector3 direction = (dot.transform.position - this.transform.position);
         float distance = direction.magnitude;
         float duration = distance / speedMove.x;
         duration /= (speedDependOnScale ? dot.scale : 1f);
         //maybe a speed = move.x and move.y depending on the direction of movement ?
-        s.AppendCallback(() => ChangeAnimDirection(direction));
-        s.Append(transform.DOMove(dot.transform.position, duration).SetEase(Ease.Linear));
-        s.Join(transform.DOScale(dot.scale, duration).SetEase(Ease.Linear));
-
-
+        ChangeAnimDirection(direction);
+        transform.DOMove(dot.transform.position, duration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => MakeNextStep(path));
+        transform.DOScale(dot.scale, duration)
+            .SetEase(Ease.Linear);
     }
-    
+
+    void EndMovement()
+    {
+        ChangeAnimDirection(Vector3.zero);
+    }
+
     void ChangeAnimDirection(Vector3 direction)
     {
         Debug.Log("Waypoint index changed to " + direction);
@@ -142,11 +156,7 @@ public class Perso : MonoBehaviour
 
         //Climb ?
     }
-
-    private bool alreadyOnPoint = false;
-    public Vector3 lastPos;
-    public Vector3 lastScale;
-
+    
     public void SavePosAndTP()
     {
         if (!alreadyOnPoint)

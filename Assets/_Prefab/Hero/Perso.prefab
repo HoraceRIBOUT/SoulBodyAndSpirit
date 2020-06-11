@@ -137,17 +137,33 @@ MonoBehaviour:
   - {fileID: 21300000, guid: eadeeb26bdae15e4c8bb4044842934c7, type: 3}
   - {fileID: 21300000, guid: cd9c21ce03bd2fc4e866ccc6a16816c9, type: 3}
   - {fileID: 21300000, guid: 719a2491bdf8e784eb5c03a50eb43e1b, type: 3}
-  speedMove: {x: 5, y: 2.5}
+  speedMove: {x: 2, y: 2.5}
   speedScale: {x: 0, y: 0.4}
   speedDependOnScale: 1
   curveCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  lastPos: {x: 0, y: 0, z: 0}
-  lastScale: {x: 0, y: 0, z: 0}
 --- !u!1 &5470827454823625164
 GameObject:
   m_ObjectHideFlags: 0

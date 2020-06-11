@@ -46,19 +46,17 @@ public class NuageLine : MonoBehaviour
 
         foreach (infoNuage info in cloudSpawned)
         {
-            info.transform.Translate(move);
-
-            if (info.transform.localPosition.x < posMinMax.x - (info.size/2f) )
+            info.transform.Translate(move * this.transform.localScale.x);
+            float halfSize = (info.size / 2f);
+            if (info.transform.localPosition.x < posMinMax.x - halfSize)
             {
-                currentXPosOfNextCloud += (info.size/2f);
-                info.transform.localPosition = Vector3.right * (currentXPosOfNextCloud * this.transform.localScale.x ) + Vector3.up * info.transform.localPosition.y;
-                currentXPosOfNextCloud += (info.size / 2f);
+                currentXPosOfNextCloud += halfSize;
+                info.transform.localPosition = Vector3.right * currentXPosOfNextCloud + Vector3.up * info.transform.localPosition.y;
+                currentXPosOfNextCloud += halfSize;
             }
         }
 
-
     }
-
 
     [MyBox.ButtonMethod()]
     public void FillOffCloud()
