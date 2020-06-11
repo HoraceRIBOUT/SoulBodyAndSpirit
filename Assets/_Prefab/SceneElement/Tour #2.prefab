@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 151680674}
   - component: {fileID: 151680675}
   m_Layer: 0
-  m_Name: Tour #2 - OmbreLeft
+  m_Name: Tour #2 - OmbreRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5127638032614027680}
   - component: {fileID: 5127638032614027683}
+  - component: {fileID: 8102360101459525059}
   m_Layer: 0
   m_Name: Tour #2
   m_TagString: Untagged
@@ -246,6 +247,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8102360101459525059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127638032614027681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf7f37308c999d444aff926978df853d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frontShadows:
+  - {fileID: 1550564578}
+  upShadows: []
+  rightShadows:
+  - {fileID: 151680675}
+  leftShadows: []
+  lightDirectionVector: {x: 1, y: 1, z: 1}
 --- !u!1 &5127638033169350328
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class LightFor2DShadows : MonoBehaviour
 {
     public Vector3 lightDirection = new Vector3(1,1,1);
-    public Vector3 pastLightDirection = new Vector3(1, 1, 1);
+    private Vector3 pastLightDirection = new Vector3(1, 1, 1);
 
     private List<ShadowAngle2D> allShadows = new List<ShadowAngle2D>();
+
+    [Range(0, 1)]
+    public float ambientLight;
+    private float pastAmbientLight;
 
     public void Awake()
     {
@@ -16,14 +21,21 @@ public class LightFor2DShadows : MonoBehaviour
 
     public void Update()
     {
-        if (lightDirection != pastLightDirection)
+        Vector3 directionUp = this.transform.up;
+        lightDirection = this.transform.TransformDirection(directionUp);
+        lightDirection.Normalize();
+        Debug.DrawRay(this.transform.position, lightDirection, Color.yellow);
+
+        if (lightDirection != pastLightDirection || ambientLight != pastAmbientLight)
         {
             foreach (ShadowAngle2D shadow in allShadows)
             {
                 shadow.lightDirectionVector = lightDirection;
+                shadow.ambientLight = ambientLight;
             }
 
             pastLightDirection = lightDirection;
+            pastAmbientLight = ambientLight;
         }
         
     }

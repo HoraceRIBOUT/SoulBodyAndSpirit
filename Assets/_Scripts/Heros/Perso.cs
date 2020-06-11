@@ -16,6 +16,8 @@ public class Perso : MonoBehaviour
     public Vector2 speedScale = new Vector2(0, 0.2f);
     public bool speedDependOnScale = true;
 
+    [Header("Movement point to point")]
+    public Sequence s;
     
     public void Update()
     {
@@ -40,7 +42,7 @@ public class Perso : MonoBehaviour
 
 
 
-
+    public AnimationCurve curveCurve;
 
 
 
@@ -80,22 +82,65 @@ public class Perso : MonoBehaviour
         List<WalkPath_Dot> path = wp.StartPath(fromThisDot, toThatDot);
 
         Sequence s = DOTween.Sequence();
+        //s.SetEase(Ease.Linear);
         Vector3 previousPos = this.transform.position;
         foreach (WalkPath_Dot dot in path)
         {
-            float distance = (dot.transform.position - previousPos).magnitude;
+            Vector3 direction = (dot.transform.position - previousPos);
+            float distance = direction.magnitude;
             float duration = distance / speedMove.x;
             duration /= (speedDependOnScale ? dot.scale : 1f);
             //maybe a speed = move.x and move.y depending on the direction of movement ?
-            s.Append(transform.DOMove(dot.transform.position, duration))
-                .SetEase(Ease.Linear);
+            s.AppendCallback(() => ChangeAnimDirection(direction));
+            s.Append(transform.DOMove(dot.transform.position, duration).SetEase(Ease.Linear));
+            s.Join(transform.DOScale(dot.scale, duration).SetEase(Ease.Linear));
             previousPos = dot.transform.position;
-            s.Join(transform.DOScale(dot.scale, duration));
-            //s.Join();
-            //add some info for the animation here
         }
+        //s.AppendCallback(() => ChangeAnimDirection(Vector3.zero));
+    }
+
+    void MakeNextStep(List<WalkPath_Dot> path)
+    {
+        WalkPath_Dot dot = path[0];
+        Vector3 direction = (dot.transform.position - this.transform.position);
+        float distance = direction.magnitude;
+        float duration = distance / speedMove.x;
+        duration /= (speedDependOnScale ? dot.scale : 1f);
+        //maybe a speed = move.x and move.y depending on the direction of movement ?
+        s.AppendCallback(() => ChangeAnimDirection(direction));
+        s.Append(transform.DOMove(dot.transform.position, duration).SetEase(Ease.Linear));
+        s.Join(transform.DOScale(dot.scale, duration).SetEase(Ease.Linear));
 
 
+    }
+    
+    void ChangeAnimDirection(Vector3 direction)
+    {
+        Debug.Log("Waypoint index changed to " + direction);
+        _animBody.SetFloat("Horizontal", direction.x);
+        _animBody.SetFloat("Vertical", direction.y * 2);
+        if (direction.x > 0)
+            _animBody.transform.parent.localScale = Vector3.one * 0.1f;
+        else
+            _animBody.transform.parent.localScale = new Vector3(-1, 1, 1) * 0.1f;
+        //_animBody.SetFloat("GoHaut", direction.y);
+        //_animBody.SetBool("GoGauche", direction.x > 0);
+        //_animBody.SetBool("GoDroite", direction.x < 0);
+        //_animBody.SetBool("GoHaut", direction.y > 0);
+        //_animBody.SetBool("GoBas", direction.y < 0);
+
+        //if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        //{
+        //    _animBody.SetBool("GoHaut", false);
+        //    _animBody.SetBool("GoBas", false);
+        //}
+        //else
+        //{
+        //    _animBody.SetBool("GoGauche", false);
+        //    _animBody.SetBool("GoDroite", false);
+        //}
+
+        //Climb ?
     }
 
     private bool alreadyOnPoint = false;
