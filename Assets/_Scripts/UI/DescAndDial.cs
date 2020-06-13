@@ -22,6 +22,9 @@ public class DescAndDial : MonoBehaviour {
 
     public bool premiereFois = true;
 
+    [Header("Other menu")]
+    public UI_BodyMenu bodyMenu;
+
     public void PremierFois()
     {
         gameObject.SetActive(true);
@@ -88,5 +91,11 @@ public class DescAndDial : MonoBehaviour {
     public void ChangeUIItem(Utils.ItemGatherable itemTarget, bool value)
     {
         uiItemImage[(int)itemTarget].SetActive(value);
+    }
+
+    public void DeployBodyMenu()
+    {
+        Finish();
+        bodyMenu.Deploy();
     }
 }

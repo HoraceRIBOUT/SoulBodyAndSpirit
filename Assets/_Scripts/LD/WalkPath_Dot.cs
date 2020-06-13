@@ -7,6 +7,8 @@ public class WalkPath_Dot : MonoBehaviour
     //Info : 
     public float scale = 1f;
     public int orderInLayer = 0;
+    //Maybe :
+    public float sizeOfEffect = 2f;
 
     [System.Serializable]
     public struct nextDot

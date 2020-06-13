@@ -13,11 +13,15 @@ public class Perso : MonoBehaviour
     private int indexForFace = 0;
 
     public Vector2 speedMove = new Vector2(5f, 2.5f);
+    public Vector2 runSpeedMove = new Vector2(5f, 2.5f);
     public Vector2 speedScale = new Vector2(0, 0.2f);
     public bool speedDependOnScale = true;
 
-    //[Header("Movement point to point")]
-
+    [Header("Movement point to point")]
+    public bool walking = false;
+    public WalkPath.closestPointResult currentGoal;
+    public WalkPath_Dot currentGoal_Dot;
+    public List<Tween> currentTween = new List<Tween>();
 
     private bool alreadyOnPoint = false;
     private Vector3 lastPos;
@@ -88,6 +92,8 @@ public class Perso : MonoBehaviour
 
     public void GoesFromThisPointToThatPoint(WalkPath_Dot fromThisDot, WalkPath_Dot toThatDot)
     {
+        walking = true;
+        currentGoal_Dot = toThatDot;
         WalkPath wp = GameManager.Instance.scenario.currentRoom.walkPath;
         List<WalkPath_Dot> path = wp.StartPath(fromThisDot, toThatDot);
         
@@ -104,6 +110,7 @@ public class Perso : MonoBehaviour
             EndMovement();
             return;
         }
+        currentTween.Clear();
 
         WalkPath_Dot dot = path[0];
         //prepare next step
@@ -116,15 +123,17 @@ public class Perso : MonoBehaviour
         duration /= (speedDependOnScale ? dot.scale : 1f);
         //maybe a speed = move.x and move.y depending on the direction of movement ?
         ChangeAnimDirection(direction);
-        transform.DOMove(dot.transform.position, duration)
+        currentTween.Add(transform.DOMove(dot.transform.position, duration)
             .SetEase(Ease.Linear)
-            .OnComplete(() => MakeNextStep(path));
-        transform.DOScale(dot.scale, duration)
-            .SetEase(Ease.Linear);
+            .OnComplete(() => MakeNextStep(path)));
+        currentTween.Add(transform.DOScale(dot.scale, duration)
+            .SetEase(Ease.Linear));
     }
 
     void EndMovement()
     {
+        walking = false;
+        currentTween.Clear();
         ChangeAnimDirection(Vector3.zero);
     }
 
@@ -166,6 +175,24 @@ public class Perso : MonoBehaviour
             lastScale = this.transform.localScale;
         }
     }
+
+    public void GoesToClosestDot(Vector3 positionInSpace)
+    {
+        if (walking)
+        {
+            foreach(Tween tw in currentTween)
+                tw.Kill();
+            currentTween.Clear();
+            /////If : already seeking this point or a close point AND path is like more than 3 long, then : runSpeedMove and not speedMove
+        }
+
+        WalkPath wp = GameManager.Instance.scenario.currentRoom.walkPath;
+        //probably will need to  watch distance of seeking
+        WalkPath.closestPointResult first = wp.ClosestDot(this.transform.position);
+        WalkPath.closestPointResult last = wp.ClosestDot(positionInSpace);
+        GoesFromThisPointToThatPoint(first.firstPoint, last.firstPoint);
+    }
+
     [MyBox.ButtonMethod()]
     public void GoesBackToLastPos()
     {

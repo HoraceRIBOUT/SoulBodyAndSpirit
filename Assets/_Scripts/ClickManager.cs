@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ClickManager : MonoBehaviour
 {
-
+    Camera cam;
     //maybe get all call of click redirect here ? and is the one who treat/recall them ? (by calling Call(this) in the other way ? 
     //reaching all "mouse Up" and "onClick" (just looking at the register)
 
@@ -13,7 +13,7 @@ public class ClickManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        cam = GameManager.Instance.cam;
     }
 
     // Update is called once per frame
@@ -21,9 +21,13 @@ public class ClickManager : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            GameManager.Instance.scenario.currentRoom.walkPath.GoesToClosestDot(Input.mousePosition);
+            Vector3 clickPosInWorld = cam.ScreenToWorldPoint(Input.mousePosition);
+            clickPosInWorld.z = 0;
+            GameManager.Instance.perso.GoesToClosestDot(clickPosInWorld);
         }
     }
+
+
 
 
 }

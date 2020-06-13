@@ -25,7 +25,7 @@ public class WalkPath : MonoBehaviour
         res.firstPoint = null;
         res.lastPoint = null;
         res.ratio = 0f;
-
+        positionInSpace.z = 0;
 
         //distance min
         float minDist = 100 * 100;
@@ -33,7 +33,10 @@ public class WalkPath : MonoBehaviour
         foreach (WalkPath_Dot dot in wholePath_Dots)
         {
             //min dist
-            float dist = (positionInSpace - dot.transform.position).sqrMagnitude;
+            //maybe a sizeOfEffect to see how min it need to be close before choosing
+            Vector3 posMinusZ = dot.transform.position;
+            posMinusZ.z = 0;
+            float dist = (positionInSpace - posMinusZ).sqrMagnitude;
             if (minDist > dist)
             {
                 minDist = dist;
@@ -43,10 +46,7 @@ public class WalkPath : MonoBehaviour
         return res;
     }
 
-    public void GoesToClosestDot(Vector3 positionInSpace)
-    {
-        //for now empty
-    }
+    
 
     private void Start()
     {
