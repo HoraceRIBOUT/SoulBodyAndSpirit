@@ -27,6 +27,22 @@ public class Perso : MonoBehaviour
     private Vector3 lastPos;
     private Vector3 lastScale;
 
+    [System.Serializable]
+    public struct Statistique
+    {
+        public float pv;
+        public float strenght;
+        public float defense;
+        public float agility;
+        public float precision;
+        public float luck;
+        public void resetStat() { pv = 1; strenght = 0; defense = 0; agility = 0; precision = 0; luck = 0; }
+    }
+    public Statistique currentStat;
+    [Header("Equipment")]
+    public List<Limb> listLimb = new List<Limb>();
+    public List<Limb> listLimbEquipped = new List<Limb>();
+
     public void Update()
     {
         MoveManagement();
@@ -59,6 +75,21 @@ public class Perso : MonoBehaviour
     public void MoveManagement()
     {
         
+    }
+
+    [MyBox.ButtonMethod()]
+    public void UpdateStatistique()
+    {
+        currentStat.resetStat();
+        foreach (Limb l in listLimbEquipped)
+        {
+            currentStat.pv        += l.statMove.pv;
+            currentStat.strenght  += l.statMove.strenght;
+            currentStat.defense   += l.statMove.defense;
+            currentStat.agility   += l.statMove.agility;
+            currentStat.precision += l.statMove.precision;
+            currentStat.luck      += l.statMove.luck;
+        }
     }
 
     /// <summary>
